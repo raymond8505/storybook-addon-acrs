@@ -40,19 +40,21 @@
   "scripts": {
     "build": "tsup",
     "build:watch": "npm run build -- --watch",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "run-p build:watch \"storybook --quiet\"",
     "prerelease": "zx scripts/prepublish-checks.js",
     "release": "npm run build && auto shipit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "server:dev": "nodemon ./src/server/index.js"
+    "server:dev": "nodemon ./src/server/index.js",
+    "test": "jest"
   },
   "dependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "@babel/preset-env": "^7.27.2",
     "@storybook/icons": "^1.2.10",
-    "axe-playwright": "^2.1.0",
     "express": "^5.1.0",
     "express-ws": "^5.0.2",
+    "jest": "^29.7.0",
     "playwright": "^1.52.0"
   },
   "devDependencies": {

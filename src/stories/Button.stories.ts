@@ -28,7 +28,7 @@ export const Primary: Story = {
   // More on args: https://storybook.js.org/docs/react/writing-stories/args
   args: {
     primary: true,
-    label: "Button",
+    label: "",
   },
 };
 
