@@ -45,7 +45,7 @@
     "release": "npm run build && auto shipit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "server:dev": "nodemon ./src/server/index.js",
+    "server:dev": "nodemon ./src/server/index.js -i ./src/server/htdocs/reports",
     "test": "jest"
   },
   "dependencies": {

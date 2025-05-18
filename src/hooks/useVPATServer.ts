@@ -11,9 +11,18 @@ export function useVPATServer() {
       setConnected(true);
     };
 
-    ws.onclose = () => {
+    ws.onclose = (e) => {
+      console.log("WebSocket closed",e);
       setConnected(false);
+      
     };
+
+    ws.onmessage = (event) => {
+      console.log('WebSocket message received:', event);
+      event.stopPropagation();
+      event.preventDefault();
+      return false
+    }
 
     setSocket(ws);
 
@@ -25,6 +34,13 @@ export function useVPATServer() {
   const sendMessage = useCallback((message:string) => {
     if (socket && connected) {
       socket.send(message);
+    }
+    else
+    {
+      console.error("Socket is not connected",{
+        socket,
+        connected
+      });
     }
   },[socket,connected]);
 

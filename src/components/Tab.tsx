@@ -30,8 +30,11 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
     "fallback value of config from parameter",
   );
 
-  const {internal_index} = useStorybookState();
-  const allStories = useMemo(() => Object.entries(internal_index.entries).filter(([_,{type}]) => type === "story").map(([_,story]) => story),[internal_index]);
+  const sbState = useStorybookState();
+  const allStories = useMemo(() => sbState.internal_index?.entries ? 
+                                    Object.entries(sbState.internal_index?.entries).filter(([_,{type}]) => type === "story").map(([_,story]) => story) 
+                                  : undefined,
+                            [sbState])
 
   const {runScan} = useVPATServer();
 
