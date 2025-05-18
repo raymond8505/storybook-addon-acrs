@@ -47,31 +47,8 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
   return (
     <TabWrapper>
       <TabInner>
-        <H1>My Addon ({KEY})</H1>
-        <p>Your addon can create a custom tab in Storybook.</p>
-        <p>
-          You have full control over what content is being rendered here. You
-          can use components from{" "}
-          <Link href="https://github.com/storybookjs/storybook/blob/next/code/core/src/components/README.md">
-            storybook/internal/components
-          </Link>{" "}
-          to match the look and feel of Storybook, for example the{" "}
-          <code>&lt;Code /&gt;</code> component below. Or build a completely
-          custom UI.
-        </p>
-        <Code>{config}</Code>
-        <p>
-          You can also have interactive UI here, like a button that updates a
-          global:{" "}
-          <IconButton
-            active={!!value}
-            onClick={() => {
-              update(!value);
-            }}
-          >
-            <LightningIcon />
-          </IconButton>
-        </p>
+        <H1>Accessibility Conformance Report (VPAT)</H1>
+        
       </TabInner>
     </TabWrapper>
   );
