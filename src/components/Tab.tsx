@@ -30,6 +30,8 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
     "fallback value of config from parameter",
   );
 
+  //
+  
   const sbState = useStorybookState();
   const allStories = useMemo(() => sbState.internal_index?.entries ? 
                                     Object.entries(sbState.internal_index?.entries).filter(([_,{type}]) => type === "story").map(([_,story]) => story) 

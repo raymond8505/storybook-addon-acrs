@@ -5824,6 +5824,11 @@ nested-error-stacks@~2.0.1:
   resolved "https://registry.yarnpkg.com/nested-error-stacks/-/nested-error-stacks-2.0.1.tgz#d2cc9fc5235ddb371fc44d506234339c8e4b0a4b"
   integrity sha512-SrQrok4CATudVzBS7coSz26QRSmlK9TzzoFbeKfcPBUFPjcQM9Rqvr/DlJkOrwI/0KcgvMub1n1g5Jt9EgRn4A==
 
+netstats@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/netstats/-/netstats-0.0.6.tgz#57072d42a6c420a931d1db9c4ca3379717305069"
+  integrity sha512-j5sdwaoLX/0x74+8bFdnoVEo3RUQexm5Lw615MVrgx7/FSQx88dZj+t5whwrDSrlsiHMYhKpn52p/6oMYHTZ2A==
+
 node-dir@^0.1.17:
   version "0.1.17"
   resolved "https://registry.yarnpkg.com/node-dir/-/node-dir-0.1.17.tgz#5f5665d93351335caabef8f1c554516cf5f1e4e5"
@@ -6247,6 +6252,14 @@ polished@^4.2.2:
   integrity sha512-OBatVyC/N7SCW/FaDHrSd+vn0o5cS855TOmYi4OkdWUMSJCET/xip//ch8xGUvtr3i44X9LVyWwQlRMTN3pwSA==
   dependencies:
     "@babel/runtime" "^7.17.8"
+
+port-pid@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/port-pid/-/port-pid-0.0.7.tgz#382cb46632e2efbda230765882aaa0029edf8144"
+  integrity sha512-2QkdCeuGLfu1jDxiiwOnafCgVFsMQXMEWvUVx9SMNq+4k6HDKiyA9YVRhmoMvJGg5ZhqEjblpj+1wdWMqn7scw==
+  dependencies:
+    netstats "0.0.6"
+    selective-whitespace "^1.0.0"
 
 possible-typed-array-names@^1.0.0:
   version "1.1.0"
@@ -6736,6 +6749,13 @@ scheduler@^0.23.2:
   integrity sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==
   dependencies:
     loose-envify "^1.1.0"
+
+selective-whitespace@^1.0.0:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/selective-whitespace/-/selective-whitespace-1.0.4.tgz#02d428b46b2c770398be9a538eb442b1e842fc5c"
+  integrity sha512-DyL/pLbb9poQNQOVndVohclAO8lq+6gEBW8q3H9c2fX+ODkugQMvjBilPjw09lrIuVRFRQ/nwhLdzn60sFh9lQ==
+  dependencies:
+    tokenize-whitespace "0.0.1"
 
 semver@^5.6.0:
   version "5.7.2"
@@ -7305,6 +7325,11 @@ toidentifier@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
+
+tokenize-whitespace@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/tokenize-whitespace/-/tokenize-whitespace-0.0.1.tgz#3c207ab58948113225246285200563e3b4b5c6ff"
+  integrity sha512-OxbdMHTjVs0ccBMfjo1v5OH6bq8yhydewCd9n6xihgtZvI3wSqR00EsM86DjELLl6VtMkY2z99r5q+uNW79E+Q==
 
 tr46@^1.0.1:
   version "1.0.1"
