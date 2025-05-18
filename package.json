@@ -95,6 +95,9 @@
       "src/preset.ts"
     ]
   },
+  "bin": {
+    "storybook-vpat-server": "./src/server/index.js"
+  },
   "storybook": {
     "displayName": "Accessibility Conformance Reports (VPAT)",
     "supportedFrameworks": [
