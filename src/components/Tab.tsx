@@ -1,10 +1,10 @@
-import { LightningIcon } from "@storybook/icons";
+
 import React, { useCallback } from "react";
-import { Code, H1, IconButton, Link } from "storybook/internal/components";
+import {  Button, H1 } from "storybook/internal/components";
 import { useGlobals, useParameter } from "storybook/internal/manager-api";
 import { styled } from "storybook/internal/theming";
-
 import { KEY } from "../constants";
+import { useVPATServer } from "src/hooks/useVPATServer";
 
 interface TabProps {
   active: boolean;
@@ -30,6 +30,10 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
     "fallback value of config from parameter",
   );
 
+  const {runScan} = useVPATServer();
+
+  
+
   // https://storybook.js.org/docs/addons/addons-api#useglobals
   const [globals, updateGlobals] = useGlobals();
   const value = globals[KEY];
@@ -48,7 +52,7 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
     <TabWrapper>
       <TabInner>
         <H1>Accessibility Conformance Report (VPAT)</H1>
-        
+        <Button onClick={() => runScan()}>Run Scan</Button>
       </TabInner>
     </TabWrapper>
   );
