@@ -7,7 +7,7 @@ expressWS(app);
 
 app.ws('/vpat', function(ws, req) {
   ws.on('message', function(msg) {
-    console.log('Socket Message',msg);
+    console.log('Socket Message',JSON.parse(msg));
   });
   console.log('WebSocket connection opened');
 });

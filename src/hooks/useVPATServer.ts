@@ -22,10 +22,27 @@ export function useVPATServer() {
     };
   }, []);
 
-  const runScan = useCallback(() => {
+  const sendMessage = useCallback((message:string) => {
     if (socket && connected) {
-      socket.send("run-scan");
+      socket.send(message);
     }
+  },[socket,connected]);
+
+  const sendJSON = useCallback((json:unknown) => {
+    sendMessage(JSON.stringify(json));
+  },[sendMessage])
+
+  const sendAction = useCallback((action:string,payload:unknown) => {
+    sendJSON({
+      action,
+      payload
+    })
+  },[sendMessage, sendJSON])
+
+  const runScan = useCallback((ids:string[]) => {
+    sendAction('run-scan',{
+      stories: ids
+    })
   },[socket,connected])
 
   return { runScan };
