@@ -1,6 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
-export function useVPATServer() {
+export interface UseVPATServerProps {
+  onReportCreated?: (report: Record<string,string>) => void;
+}
+export function useVPATServer({
+  onReportCreated
+}: UseVPATServerProps) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
 
@@ -18,10 +23,16 @@ export function useVPATServer() {
     };
 
     ws.onmessage = (event) => {
-      console.log('WebSocket message received:', event);
-      event.stopPropagation();
-      event.preventDefault();
-      return false
+      const data = JSON.parse(event.data);
+      switch(data.action) {
+        case 'report-created':
+          if (onReportCreated) {
+            onReportCreated(data.payload.report);
+          }
+          break;
+        default:
+          console.log("Unknown message", event.data);
+      }
     }
 
     setSocket(ws);

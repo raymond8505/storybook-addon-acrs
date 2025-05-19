@@ -5,6 +5,7 @@ const httpApp = express();
 import expressWS from 'express-ws'
 import {runScan} from './runScan.js'
 import {createReport} from './createReport.js'
+import cors from 'cors'
 expressWS(wsApp);
 
 wsApp.ws('/vpat', function(ws, req) {
@@ -15,12 +16,12 @@ wsApp.ws('/vpat', function(ws, req) {
     {
       case 'run-scan':
         console.log('Running Scan', msg.payload.stories)
-        const fileName = createReport(await runScan(msg.payload))
+        const id = createReport(await runScan(msg.payload))
         ws.send(JSON.stringify({
           action: 'report-created',
           payload: {
             report : {
-              url: `http://localhost:3001/${fileName}.json`,
+              id,
             }
           }
         }))
@@ -28,9 +29,8 @@ wsApp.ws('/vpat', function(ws, req) {
     }
   });
   console.log('WebSocket connection opened');
-  ws.send('hello')
 });
-
+httpApp.use(cors())
 httpApp.use(express.static(`${process.cwd()}/src/server/htdocs/reports`));
 
 wsApp.listen(3000,()=>{

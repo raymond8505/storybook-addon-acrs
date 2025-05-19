@@ -1,10 +1,11 @@
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {  Button, H1 } from "storybook/internal/components";
-import {  useParameter, useStorybookState } from "storybook/internal/manager-api";
+import {   useGlobals, useStorybookState } from "storybook/internal/manager-api";
 import { styled } from "storybook/internal/theming";
-import { KEY } from "../constants";
+
 import { useVPATServer } from "src/hooks/useVPATServer";
+import { ReportViewer } from "src/components/ReportViewer";
 
 interface TabProps {
   active: boolean;
@@ -24,13 +25,9 @@ const TabInner = styled.div({
 });
 
 export const Tab: React.FC<TabProps> = ({ active }) => {
-  // https://storybook.js.org/docs/react/addons/addons-api#useparameter
-  const config = useParameter<string>(
-    KEY,
-    "fallback value of config from parameter",
-  );
 
-  //
+
+  const [globals,updateGlobals] = useGlobals()
   
   const sbState = useStorybookState();
   const allStories = useMemo(() => sbState.internal_index?.entries ? 
@@ -38,7 +35,13 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                                   : undefined,
                             [sbState])
 
-  const {runScan} = useVPATServer();
+  const {runScan} = useVPATServer({
+    onReportCreated: (report) => {
+      updateGlobals({
+        report: encodeURIComponent(report.id)
+      })
+    },
+  });
 
   if (!active) {
     return null;
@@ -47,8 +50,11 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
   return (
     <TabWrapper>
       <TabInner>
-        <H1>Accessibility Conformance Report (VPAT)</H1>
+        <H1>Accessibility Conformance Reports</H1>
         <Button onClick={() => runScan(allStories.map(story => story.id))}>Run Scan</Button>
+        {
+          globals.report ? <ReportViewer id={globals.report} /> : null
+        }
       </TabInner>
     </TabWrapper>
   );

@@ -15,7 +15,7 @@ export function createReport(report)
     }
   })
 
-  const fileName = new Date().toISOString()
-  writeFileSync(`${__dirname}/htdocs/reports/${fileName}.json`, JSON.stringify(toSave, null, 2), 'utf8');
-  return fileName
+  const id = new Date().getTime()
+  writeFileSync(`${__dirname}/htdocs/reports/${id}.json`, JSON.stringify(toSave, null, 2), 'utf8');
+  return id
 }

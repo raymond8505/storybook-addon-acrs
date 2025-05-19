@@ -45,14 +45,21 @@
     "release": "npm run build && auto shipit",
     "storybook": "storybook dev -p 6006 --no-open --debug",
     "build-storybook": "storybook build",
-    "server:dev": "nodemon ./src/server/index.js -i ./dist",
+    "server:dev": "nodemon ./src/server/index.js --config ",
     "test": "jest",
     "rebuild-storybook": "node ./killStorybook.js && yarn storybook"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "./dist",
+      "./src/server/htdocs/reports"
+    ]
   },
   "dependencies": {
     "@axe-core/playwright": "^4.10.1",
     "@babel/preset-env": "^7.27.2",
     "@storybook/icons": "^1.2.10",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-ws": "^5.0.2",
     "jest": "^29.7.0",
@@ -113,7 +120,7 @@
     "storybook-vpat-server": "./src/server/index.js"
   },
   "storybook": {
-    "displayName": "Accessibility Conformance Reports (VPAT)",
+    "displayName": "Accessibility Conformance Reports",
     "supportedFrameworks": [
       "react",
       "vue",

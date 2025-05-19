@@ -9,7 +9,7 @@ addons.register(ADDON_ID, (api) => {
 
   addons.add(TAB_ID, {
     type: types.TAB,
-    title: "VPAT 2",
+    title: "ACR",
     // only show on local builds
     match: () => location.hostname.match(/(localhost|127\.0\.0\.1)/) !== null,
     render: ({ active }) => <Tab active={active} />,

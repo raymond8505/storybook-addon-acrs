@@ -29,6 +29,10 @@ export async function runScan({stories})
         resultTypes: ['violations','incomplete'],
       }).analyze();
 
+      result.meta = {
+        storyId,
+        
+      }
       results.push(result)
     } catch (e) {
       // do something with the error
