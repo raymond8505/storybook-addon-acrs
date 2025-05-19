@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 
+export interface WCAGRuleLink {
+  label: string;
+  url: string;
+  tags?: string[];
+  ruleTag?:string;
+}
 export interface UseVPATServerProps {
   onReportCreated?: (report: Record<string,string>) => void;
 }
@@ -8,7 +14,7 @@ export function useVPATServer({
 }: UseVPATServerProps) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
-
+  const [ruleDefinitions, setRuleDefinitions] = useState<WCAGRuleLink[]>([]);
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3000/vpat");
 
@@ -29,6 +35,9 @@ export function useVPATServer({
           if (onReportCreated) {
             onReportCreated(data.payload.report);
           }
+          break;
+        case 'ready':
+          setRuleDefinitions(data.payload.ruleDefinitions);
           break;
         default:
           console.log("Unknown message", event.data);
@@ -72,5 +81,5 @@ export function useVPATServer({
     })
   },[socket,connected])
 
-  return { runScan };
+  return { runScan, ruleDefinitions };
 }

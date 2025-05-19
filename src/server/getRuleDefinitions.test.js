@@ -3,6 +3,7 @@ import { getRuleDefinitions } from "./getRuleDefinitions";
 
 describe('getRuleDefinitions', () => {
   it('works', async () => {
-    console.log(await getRuleDefinitions())
+    const result = await getRuleDefinitions()
+    // console.log(result)
   })
 })

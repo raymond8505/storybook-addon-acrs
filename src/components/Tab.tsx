@@ -35,7 +35,7 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                                   : undefined,
                             [sbState])
 
-  const {runScan} = useVPATServer({
+  const {runScan, ruleDefinitions} = useVPATServer({
     onReportCreated: (report) => {
       updateGlobals({
         report: encodeURIComponent(report.id)
@@ -48,12 +48,17 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
   }
 
   return (
-    <TabWrapper>
-      <TabInner>
+    <TabWrapper style={{
+      height: "100%"
+    }}>
+      <TabInner style={{
+        maxWidth: "none",
+        padding: "0 10vmin 4rem",
+      }}>
         <H1>Accessibility Conformance Reports</H1>
         <Button onClick={() => runScan(allStories.map(story => story.id))}>Run Scan</Button>
         {
-          globals.report ? <ReportViewer id={globals.report} /> : null
+          globals.report ? <ReportViewer id={globals.report} ruleDefinitions={ruleDefinitions} /> : null
         }
       </TabInner>
     </TabWrapper>
