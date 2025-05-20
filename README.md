@@ -16,7 +16,8 @@ so you can easily inspect the problems flagged in the VPAT.
 
 1. Clone this repo
 2. run `npm link` or `yarn link` to link this package
-3. run `npm link storybook-addon-vpat` or `yarn link "storybook-addon-vpat"` in the dir of your project
-4. add `storybook-addon-vpat` to your `addons` in your storybook config
-5. run the server with `npx storybook-vpat-server`
-6. run storybook in your project
+3. run 'npm run start` or `yarn start`
+4. run `npm link storybook-addon-vpat` or `yarn link "storybook-addon-vpat"` in the dir of your project
+5. add `storybook-addon-vpat` to your `addons` in your storybook config
+6. run the server with `npx storybook-vpat-server`
+7. run storybook in your project
