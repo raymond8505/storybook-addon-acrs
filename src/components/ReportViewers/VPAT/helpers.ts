@@ -1,12 +1,15 @@
 import { AxeResult, AxeResultWithStoryId, Report, StoryResult } from "src/components/ReportViewer";
 import { WCAGRuleLink } from "src/hooks/useVPATServer";
 
-export function getResultsByImpact(results:AxeResultWithStoryId[]): 
-{critical:AxeResultWithStoryId[],serious:AxeResultWithStoryId[],moderate:AxeResultWithStoryId[],minor:AxeResultWithStoryId[]}
+export type ResultsByImpact = {critical:AxeResultWithStoryId[],serious:AxeResultWithStoryId[],moderate:AxeResultWithStoryId[],minor:AxeResultWithStoryId[]}
+
+export function getResultsByImpact(results:AxeResultWithStoryId[]): ResultsByImpact
 {
-  return [...results].reduce<{critical:AxeResultWithStoryId[],serious:AxeResultWithStoryId[],moderate:AxeResultWithStoryId[],minor:AxeResultWithStoryId[]}>((acc, result) => {
+  return [...results].reduce<ResultsByImpact>((acc, result) => {
+    
     acc[result.impact].push(result)
     return acc
+
   },{
     critical: [],
     serious: [],

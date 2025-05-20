@@ -8,6 +8,12 @@ import {createReport} from './createReport.js'
 import cors from 'cors'
 import { getRuleDefinitions } from './getRuleDefinitions.js';
 
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 expressWS(wsApp);
 const ruleDefinitions = await getRuleDefinitions()
 
@@ -49,7 +55,7 @@ wsApp.ws('/vpat', function(ws, req) {
   }))
 });
 httpApp.use(cors())
-httpApp.use(express.static(`${process.cwd()}/src/server/htdocs/reports`));
+httpApp.use(express.static(`${__dirname}/../server/htdocs/reports`));
 
 wsApp.listen(3000,()=>{
   console.log('WebSocket server running at ws://localhost:3000/vpat');

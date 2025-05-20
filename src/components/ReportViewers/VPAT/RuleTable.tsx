@@ -44,7 +44,9 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
           <td>
             {conformanceLevel === "Supports" ? '' : <DL>
               {['critical', 'serious', 'moderate', 'minor'].map((impact) => {
-                const impactResults = violationsByImpact[impact as keyof ReturnType<typeof getResultsByImpact>]
+                const impactResults = violationsByImpact[impact as keyof ReturnType<typeof getResultsByImpact>].filter((result,index,arr) => {
+                  return arr.findIndex(r => r.storyId === result.storyId) === index
+                })
 
                 if(impactResults.length === 0) {
                   return null
@@ -54,9 +56,11 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
                   <dt>{impact}</dt>
                   <dd>
                     <UL>
-                      {impactResults.map((result) => {
+                      {impactResults.map((result,resultIndex) => {
                         const story = (stories[result.storyId] as API_StoryEntry)
-                        return <li key={`${index}-${impact}-${result.storyId}`}>
+
+                        console.log('story', story)
+                        return <li key={`${index}-${impact}-${result.id}-${resultIndex}`}>
                           <a href="#" onClick={(e) => {
                             e.preventDefault()
                             e.stopPropagation()
@@ -64,7 +68,7 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
                             api.setQueryParams({
                               tab: undefined
                             })
-                          }}>{story.title}</a>
+                          }}>{story.title} - {story.name}</a>
                         </li>
                       })}
                     </UL>
