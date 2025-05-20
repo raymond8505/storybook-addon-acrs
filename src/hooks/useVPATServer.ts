@@ -8,13 +8,24 @@ export interface WCAGRuleLink {
 }
 export interface UseVPATServerProps {
   onReportCreated?: (report: Record<string,string>) => void;
+  onServerError?: (ev: Event) => any
 }
+
+export interface ScanProgress {
+    currentIndex: number,
+    currentId: string,
+    total: number;
+    progress: number;
+  }
 export function useVPATServer({
-  onReportCreated
+  onReportCreated,
+  onServerError
 }: UseVPATServerProps) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
   const [ruleDefinitions, setRuleDefinitions] = useState<WCAGRuleLink[]>([]);
+  const [scanning, setScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3000/vpat");
 
@@ -28,13 +39,19 @@ export function useVPATServer({
       
     };
 
+    ws.addEventListener("error", onServerError);
+
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
       switch(data.action) {
         case 'report-created':
+          setScanning(false);
           if (onReportCreated) {
             onReportCreated(data.payload.report);
           }
+          break;
+        case 'scan-progress':
+          setScanProgress(data.payload.progress);
           break;
         case 'ready':
           setRuleDefinitions(data.payload.ruleDefinitions);
@@ -49,7 +66,14 @@ export function useVPATServer({
     return () => {
       ws.close();
     };
-  }, []);
+  }, [
+    onReportCreated,
+    setScanning,
+    setRuleDefinitions,
+    setScanProgress,
+    setConnected,
+    setSocket
+  ]);
 
   const sendMessage = useCallback((message:string) => {
     if (socket && connected) {
@@ -76,10 +100,11 @@ export function useVPATServer({
   },[sendMessage, sendJSON])
 
   const runScan = useCallback((ids:string[]) => {
+    setScanning(true)
     sendAction('run-scan',{
       stories: ids
     })
-  },[socket,connected])
+  },[socket,connected,setScanning])
 
-  return { runScan, ruleDefinitions };
+  return { runScan, ruleDefinitions, scanning, scanProgress, connected };
 }

@@ -1,11 +1,12 @@
 
-import React, { useEffect, useMemo } from "react";
-import {  Button, H1 } from "storybook/internal/components";
+import React, { useCallback, useEffect, useMemo } from "react";
+import {  Button, H1, H2 } from "storybook/internal/components";
 import {   useGlobals, useStorybookState } from "storybook/internal/manager-api";
 import { styled } from "storybook/internal/theming";
 
 import { useVPATServer } from "src/hooks/useVPATServer";
 import { ReportViewer } from "src/components/ReportViewer";
+import { ScanProgress } from "src/components/ScanProgress";
 
 interface TabProps {
   active: boolean;
@@ -35,12 +36,12 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                                   : undefined,
                             [sbState])
 
-  const {runScan, ruleDefinitions} = useVPATServer({
-    onReportCreated: (report) => {
+  const {runScan, ruleDefinitions, scanning, scanProgress, connected} = useVPATServer({
+    onReportCreated: useCallback((report) => {
       updateGlobals({
         report: encodeURIComponent(report.id)
       })
-    },
+    },[updateGlobals])
   });
 
   if (!active) {
@@ -56,10 +57,14 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
         padding: "0 10vmin 4rem",
       }}>
         <H1>Accessibility Conformance Reports</H1>
-        <Button onClick={() => runScan(allStories.map(story => story.id))}>Run Scan</Button>
+        {connected ? <>
+        <div>
+          <Button onClick={() => runScan(allStories.map(story => story.id))} disabled={scanning}>Run Scan</Button>
+          {scanning ? <ScanProgress progress={scanProgress} /> : null}
+        </div>
         {
-          globals.report ? <ReportViewer id={globals.report} ruleDefinitions={ruleDefinitions} /> : null
-        }
+          globals.report && !scanning ? <ReportViewer id={globals.report} ruleDefinitions={ruleDefinitions} /> : null
+        }</> : <div>Connecting To Server</div>}
       </TabInner>
     </TabWrapper>
   );
