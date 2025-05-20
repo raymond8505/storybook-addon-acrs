@@ -71,7 +71,7 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
           This method only catches low hanging fruit. It is not a replacement for manually testing the app itself.{' '}
           Less than half of accessibility issues can be caught by automated testing. Even fewer when only testing components{' '}
           in isolation. Use this report to nail your fundamentals and inform your best practices. <strong>This is meant to be{' '}
-          internal document.</strong>
+          an internal document.</strong>
         </p>
       </li>
       <li>
