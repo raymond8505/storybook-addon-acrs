@@ -63,6 +63,28 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
       the violations found in this Storybook's components. <strong>Critical, Serious, Moderate, Minor</strong>{' '}
       See the <a href="https://docs.deque.com/devtools-mobile/2023.4.19/en/impact">Axe Rule Impact Levels documentation</a> for more information.
     </p>
+    <H3>Using This Report</H3>
+    <UL>
+      <li>
+        <strong>THIS IS NOT A MAGIC BULLET!</strong>
+        <p>
+          This method only catches low hanging fruit. It is not a replacement for manually testing the app itself.{' '}
+          Less than half of accessibility issues can be caught by automated testing. Even fewer when only testing components.{' '}
+          in isolation. Use this report to nail your fundamentals and inform your best practices. <strong>This is meant to be{' '}
+          internal document.</strong>
+        </p>
+      </li>
+      <li>
+        <strong>Parent stories will show their child components' violations</strong>
+        <p>if a violation exists in a component at its most fundamental state, all its stories will be reported{' '}
+          and any stories for parent components will be reported. It's best to start with your smallest components{' '}
+          when addressing this report.</p>
+        <p>
+          eg: Panel component and Button component are both reported as violations. Knowing Panel contains Button components,{' '}
+          resolve the issues for Button first and re-scan. Many of the Panel issues may be resolved by fixing the Button issues.
+        </p>  
+        </li>
+    </UL>
     <H3>Table 1: Success Criteria, Level A</H3>
     <RuleTable report={report} ruleDefinitions={ruleDefinitions} tags={['wcag2a','wcag21a']} />
     <H3>Table 2: Success Criteria, Level AA</H3>
