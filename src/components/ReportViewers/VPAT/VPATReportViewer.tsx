@@ -69,7 +69,7 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
         <strong>THIS IS NOT A MAGIC BULLET!</strong>
         <p>
           This method only catches low hanging fruit. It is not a replacement for manually testing the app itself.{' '}
-          Less than half of accessibility issues can be caught by automated testing. Even fewer when only testing components.{' '}
+          Less than half of accessibility issues can be caught by automated testing. Even fewer when only testing components{' '}
           in isolation. Use this report to nail your fundamentals and inform your best practices. <strong>This is meant to be{' '}
           internal document.</strong>
         </p>
@@ -89,5 +89,7 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
     <RuleTable report={report} ruleDefinitions={ruleDefinitions} tags={['wcag2a','wcag21a']} />
     <H3>Table 2: Success Criteria, Level AA</H3>
     <RuleTable report={report} ruleDefinitions={ruleDefinitions} tags={['wcag2aa','wcag21aa','wcag22aa']} />
+    <H3>Table 3: Success Criteria, Level AAA</H3>
+    <RuleTable report={report} ruleDefinitions={ruleDefinitions} tags={['wcag2aaa']} />
   </div>
 }

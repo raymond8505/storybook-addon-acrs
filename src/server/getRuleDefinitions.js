@@ -22,7 +22,7 @@ export async function getRuleDefinitions(version = 'wcag21')
     })
   })
 
-  const wcagLevelsTags = ['wcag2a','wcag2aa','wcag21a','wcag21aa']
+  const wcagLevelsTags = ['wcag2a','wcag2aa','wcag2aaa','wcag21a','wcag21aa']
 
   ruleLinks.forEach((link) => {
     const ruleNum = link.label.match(/^[\d\.]+/)?.[0]
