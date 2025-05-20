@@ -24,8 +24,11 @@ wsApp.ws('/vpat', function(ws, req) {
     switch(msg.action)
     {
       case 'run-scan':
-        console.log('Running Scan', msg.payload.stories)
-        const id = createReport(await runScan(msg.payload.stories,{
+        //console.log('Running Scan', msg.payload.stories)
+        const id = createReport(await runScan(
+          ['player-videoheader--relative-layout-with-tap-to-unmute-disabled']
+          //msg.payload.stories
+          ,{
           onProgress: (progress) => {
             ws.send(JSON.stringify({
               action: 'scan-progress',

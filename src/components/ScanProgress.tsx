@@ -19,6 +19,6 @@ export function ScanProgress({ progress }: { progress: IScanProgress | null }) {
   return <div style={{
     display: "inline-block",
   }}>
-    <span>{progress.currentIndex} / {progress.total} ({Math.round(progress.progress * 100)}%) {currentStory.title}</span>
+    <span>{progress.currentIndex} / {progress.total} ({Math.round(progress.progress * 100)}%) {currentStory.title} - {currentStory.name}</span>
   </div>
 }

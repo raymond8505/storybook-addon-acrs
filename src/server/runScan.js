@@ -25,27 +25,35 @@ export async function runScan(stories, options = {
     const page = await context.newPage();
 
     try {
-      await page.goto(`http://localhost:6006/iframe.html?viewMode=story&id=${storyId}`);
+      await page.goto(`http://localhost:6006/iframe.html?viewMode=story&id=${storyId}`,{
+        waitUntil: 'load',
+      });
 
-      await page.locator('body').waitFor({ state: 'visible' });
-
-      const builder = new AxeBuilder({ page });
-      
-      const result = await builder.options({
-        resultTypes: ['violations','incomplete'],
-      }).analyze();
-
-      result.meta = {
-        storyId,
-        
+      try {
+        await page.locator('body').waitFor({ state: 'visible', timeout: 10000 });
       }
-      results.push(result)
-      options.onProgress({
-        currentIndex: Number(s),
-        currentId: storyId,
-        total: stories.length,
-        progress: (s / stories.length),
-      })
+      catch {}
+      finally {
+        const builder = new AxeBuilder({ page });
+        
+        const result = await builder.options({
+          resultTypes: ['violations','incomplete'],
+        }).analyze();
+  
+        result.meta = {
+          storyId,
+          
+        }
+        console.log('Scan result', storyId, result.violations)
+        results.push(result)
+        options.onProgress({
+          currentIndex: Number(s),
+          currentId: storyId,
+          total: stories.length,
+          progress: (s / stories.length),
+        })
+      }
+
     } catch (e) {
       console.error('Error running axe scan', storyId, e)
     }
