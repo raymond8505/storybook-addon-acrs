@@ -19,7 +19,17 @@ wsApp.ws('/vpat', function(ws, req) {
     {
       case 'run-scan':
         console.log('Running Scan', msg.payload.stories)
-        const id = createReport(await runScan(msg.payload))
+        const id = createReport(await runScan(msg.payload.stories,{
+          onProgress: (progress) => {
+            console.log('Progress', progress)
+            ws.send(JSON.stringify({
+              action: 'scan-progress',
+              payload: {
+                progress
+              }
+            }))
+          }
+        }))
         ws.send(JSON.stringify({
           action: 'report-created',
           payload: {

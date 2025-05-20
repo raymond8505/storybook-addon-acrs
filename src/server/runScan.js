@@ -1,4 +1,6 @@
 import { AxeBuilder } from '@axe-core/playwright';
+import { on } from 'events';
+import { totalmem } from 'os';
 import playwright  from 'playwright';
 import util from 'util';
 
@@ -10,11 +12,14 @@ import util from 'util';
       colors: true
     });
   }
-export async function runScan({stories})
+export async function runScan(stories, options = {
+  onProgress: () => {},
+})
 {
   const results = []
 
-  for(const storyId of stories) {
+  for(const s in stories) {
+    const storyId = stories[s]
     const browser = await playwright.chromium.launch({ headless: true });
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -34,8 +39,14 @@ export async function runScan({stories})
         
       }
       results.push(result)
+      options.onProgress({
+        currentIndex: Number(s),
+        currentId: storyId,
+        total: stories.length,
+        progress: (s / stories.length),
+      })
     } catch (e) {
-      // do something with the error
+      console.error('Error running axe scan', e)
     }
 
     await browser.close();
