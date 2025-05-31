@@ -26,6 +26,7 @@ export function useVPATServer({
   const [ruleDefinitions, setRuleDefinitions] = useState<WCAGRuleLink[]>([]);
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
+  const [reports, setReports] = useState<string[]>([]);
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3000/vpat");
 
@@ -46,7 +47,9 @@ export function useVPATServer({
       switch(data.action) {
         case 'report-created':
           setScanning(false);
+          setScanProgress(null);
           if (onReportCreated) {
+            setReports((prevReports) => [data.payload.report.id, ...prevReports]);
             onReportCreated(data.payload.report);
           }
           break;
@@ -55,6 +58,7 @@ export function useVPATServer({
           break;
         case 'ready':
           setRuleDefinitions(data.payload.ruleDefinitions);
+          setReports(data.payload.reports);
           break;
         default:
           console.log("Unknown message", event.data);
@@ -107,5 +111,5 @@ export function useVPATServer({
     })
   },[socket,connected,setScanning])
 
-  return { runScan, ruleDefinitions, scanning, scanProgress, connected };
+  return { runScan, ruleDefinitions, scanning, scanProgress, connected, reports };
 }

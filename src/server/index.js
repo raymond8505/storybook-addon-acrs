@@ -11,11 +11,26 @@ import { getRuleDefinitions } from './getRuleDefinitions.js';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+import {readdirSync} from 'fs'
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 expressWS(wsApp);
 const ruleDefinitions = await getRuleDefinitions()
+
+function getAllReports() {
+
+  const reports = [];
+  const files =  readdirSync(`${__dirname}/htdocs/reports`);
+  for (const file of files) {
+    if (file.endsWith('.json')) {
+      reports.push(file.replace('.json', ''));
+    }
+  }
+
+  return reports
+}
 
 wsApp.ws('/vpat', function(ws, req) {
   ws.on('message', async function(msgStr) {
@@ -53,7 +68,8 @@ wsApp.ws('/vpat', function(ws, req) {
   ws.send(JSON.stringify({
     action: 'ready',
     payload: {
-      ruleDefinitions
+      ruleDefinitions,
+      reports: getAllReports()
     }
   }))
 });

@@ -36,6 +36,7 @@ export type Report = StoryResult[]
 export function ReportViewer({id,ruleDefinitions,reportType}: {id?: string, ruleDefinitions?: WCAGRuleLink[],reportType: string})
 {
   const [report, setReport] = useState<Report|null>(null)
+  const [reportFetchError, setReportFetchError] = useState<any|null>(null)
 
   useEffect(() => {
     if (id) {
@@ -46,7 +47,10 @@ export function ReportViewer({id,ruleDefinitions,reportType}: {id?: string, rule
           }
           response.json().then((json) => {
             setReport(json);
+            setReportFetchError(null);
           })
+        }).catch((e)=>{
+          setReportFetchError(e)
         })
       }
   },[id])
@@ -69,6 +73,6 @@ export function ReportViewer({id,ruleDefinitions,reportType}: {id?: string, rule
             paddingRight: '10vmin'
             }}>
     <PrintStyles />
-    {getReportViewer(reportType, report, ruleDefinitions)}
+    {reportFetchError ? `Error getting report ${id}: ${reportFetchError.message}` : getReportViewer(reportType, report, ruleDefinitions)}
   </div>
 }

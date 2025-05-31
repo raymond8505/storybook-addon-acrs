@@ -81,6 +81,33 @@ const TabButton = styled(Button)<{ active?: boolean }>(({ active }) => ({
     marginRight: '0',
   }
 }))
+
+const ReportsList = styled.ul({
+  listStyle: 'none',
+  padding: 0,
+  margin: '10px 0 0',
+  overflowY: 'auto',
+  height: 'calc(100% - 50px)',
+  li: {
+    marginBottom: '5px',
+    '&:last-child': {
+      marginBottom: '0',
+    }
+  }
+});
+const ReportButton = styled.button<{ active?: boolean }>(({ active }) => ({
+  width: '100%',
+  textAlign: 'left',
+  backgroundColor: active ? '#e0e0e0' : 'transparent',
+  color: active ? '#007bff' : '#000',
+  padding: '10px',
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: active ? '#d0d0d0' : '#f0f0f0',
+  },
+  fontSize: '14px',
+  border: 'none',
+}));
 export const Tab: React.FC<TabProps> = ({ active }) => {
 
 
@@ -92,7 +119,7 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                                   : undefined,
                             [sbState])
 
-  const {runScan, ruleDefinitions, scanning, scanProgress, connected} = useVPATServer({
+  const {runScan, ruleDefinitions, scanning, scanProgress, connected, reports} = useVPATServer({
     onReportCreated: useCallback((report) => {
       updateGlobals({
         report: encodeURIComponent(report.id)
@@ -114,6 +141,18 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
           <Sidebar id="sidebar">
             <Button onClick={() => runScan(allStories.map(story => story.id))} disabled={scanning}>Run Scan</Button>
             {scanning ? <ScanProgress progress={scanProgress} /> : null}
+            <ReportsList>
+              {reports.map((reportId) => (
+                <li key={reportId}>
+                  <ReportButton
+                    onClick={() => updateGlobals({ report: encodeURIComponent(reportId) })}
+                    active={globals.report === encodeURIComponent(reportId)}
+                  >
+                    {reportId}
+                  </ReportButton>
+                </li>
+              ))}
+            </ReportsList>
           </Sidebar>
           <Reports id="reports">
             <ReportTypeTabs id="report-type-tabs">
