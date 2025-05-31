@@ -42,7 +42,7 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
           <td><a href={rule.url} target="_blank">{rule.label}</a></td>
           <td>{conformanceLevel}</td>
           <td>
-            {conformanceLevel === "Supports" ? '' : <DL>
+            {conformanceLevel === "No Violations Found" ? '' : <DL>
               {['critical', 'serious', 'moderate', 'minor'].map((impact) => {
                 const impactResults = violationsByImpact[impact as keyof ReturnType<typeof getResultsByImpact>].filter((result,index,arr) => {
                   return arr.findIndex(r => r.storyId === result.storyId) === index
@@ -59,7 +59,6 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
                       {impactResults.map((result,resultIndex) => {
                         const story = (stories[result.storyId] as API_StoryEntry)
 
-                        console.log('story', story)
                         return <li key={`${index}-${impact}-${result.id}-${resultIndex}`}>
                           <a href="#" onClick={(e) => {
                             e.preventDefault()

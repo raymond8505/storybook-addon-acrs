@@ -99,10 +99,11 @@ export function useVPATServer({
     })
   },[sendMessage, sendJSON])
 
-  const runScan = useCallback((ids:string[]) => {
+  const runScan = useCallback((stories:string[]) => {
+
     setScanning(true)
     sendAction('run-scan',{
-      stories: ids
+      stories
     })
   },[socket,connected,setScanning])
 

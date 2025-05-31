@@ -12,6 +12,12 @@ const meta: Meta<typeof Button> = {
   },
   tags: ["autodocs"],
   parameters: {
+    // acr : {
+    //   delay: 1000,
+    // },
+    // chromatic: {
+    //   delay: 2000
+    // },
     myAddonParameter: `
 <MyComponent boolProp scalarProp={1} complexProp={{ foo: 1, bar: '2' }}>
   <SomeOtherComponent funcProp={(a) => a.id} />

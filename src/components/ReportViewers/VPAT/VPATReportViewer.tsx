@@ -25,11 +25,15 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
       <li><strong>Browser Dimensions:</strong> {firstResult.testEnvironment.windowWidth}x{firstResult.testEnvironment.windowHeight}</li>
     </UL>
     <H4>Conformance Levels</H4>
+    <p>
+      This report determines conformance levels based on the impact levels of 
+      the violations found in this Storybook's components. <strong>Critical, Serious, Moderate, Minor</strong>{' '}
+      See the <a href="https://docs.deque.com/devtools-mobile/2023.4.19/en/impact">Axe Rule Impact Levels documentation</a> for more information.
+    </p>
     <DL>
-      <dt>Supports</dt>
+      <dt>No Violations Found</dt>
       <dd>
-        <p>The functionality of the product has at least one method that meets the criterion without 
-        known defects or meets with equivalent facilitation.</p>
+        <p>No violations found for the given rule. This is not the same as "Supports" see <em>Using This Report</em> for more info</p>
         <ul>
           <li>No Critical Violations</li>
           <li>No Serious Violations</li>
@@ -52,17 +56,10 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
         <p>The majority of product functionality does not meet the criterion.</p>
         <ul>
           <li>One or more Critical Violations or</li>
-          <li>One or more Violations</li>
+          <li>One or more Serious Violations</li>
         </ul>
       </dd>
-    </DL>
-    <H4>Definitions</H4>
-    <H5>Impact Levels</H5>
-    <p>
-      This report determines conformance levels based the impact levels of 
-      the violations found in this Storybook's components. <strong>Critical, Serious, Moderate, Minor</strong>{' '}
-      See the <a href="https://docs.deque.com/devtools-mobile/2023.4.19/en/impact">Axe Rule Impact Levels documentation</a> for more information.
-    </p>
+    </DL>    
     <H3>Using This Report</H3>
     <UL>
       <li>
@@ -72,6 +69,12 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
           Less than half of accessibility issues can be caught by automated testing. Even fewer when only testing components{' '}
           in isolation. Use this report to nail your fundamentals and inform your best practices. <strong>This is meant to be{' '}
           an internal document.</strong>
+        </p>
+        <p>
+          This report cannot determine if a rule is "supported" only that no violations were found for that rule.
+          <strong>Support</strong> is defined as the product functionality meeting the criterion without known defects or meets with equivalent facilitation.
+          This scan cannot determine intentionality of each component or its intended use, only whether the component contains known violations of the rules.
+          This is one of the reasons this report is not a replacement for manual testing.
         </p>
       </li>
       <li>

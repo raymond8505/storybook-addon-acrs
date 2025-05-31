@@ -12,6 +12,20 @@ so you can easily inspect the problems flagged in the VPAT.
 - only works locally
 - best to maintain a local branch of your project with this package linked so you can merge and scan latest locally.
 
+## Story Parameters
+
+Use story parameters to customize scan behaviour on a per story basis
+
+```
+{
+  parameters : {
+    acr : {
+      delay?: 1000 //how long to wait after load before scanning. Falls back to chromatic.delay
+    }
+  }
+}
+```
+
 ## Install
 
 1. Clone this repo

@@ -1,6 +1,5 @@
 import { AxeBuilder } from '@axe-core/playwright';
-import { on } from 'events';
-import { totalmem } from 'os';
+
 import playwright  from 'playwright';
 import util from 'util';
 
@@ -20,20 +19,38 @@ export async function runScan(stories, options = {
 
   for(const s in stories) {
     const storyId = stories[s]
-    const browser = await playwright.chromium.launch({ headless: true });
+    const browser = await playwright.chromium.launch({headless: true});
     const context = await browser.newContext();
     const page = await context.newPage();
-
+    const url = `http://localhost:6006/iframe.html?viewMode=story&id=${storyId}`
     try {
-      await page.goto(`http://localhost:6006/iframe.html?viewMode=story&id=${storyId}`,{
+      await page.goto(url,{
         waitUntil: 'load',
       });
+
+      
 
       try {
         await page.locator('body').waitFor({ state: 'visible', timeout: 10000 });
       }
       catch {}
       finally {
+        await page.waitForSelector('#storybook-parameters', {
+          timeout: 10000,
+          state: 'attached'
+        });
+
+        const params = await page.evaluate(() => {
+          return window.storyParameters;
+        })
+
+        const delay = params?.acr?.delay ?? params?.chromatic?.delay ?? undefined;
+
+        if(delay)
+        {
+          await page.waitForTimeout(delay)
+        }
+
         const builder = new AxeBuilder({ page });
         
         const result = await builder.options({
@@ -44,7 +61,7 @@ export async function runScan(stories, options = {
           storyId,
           
         }
-        console.log('Scan result', storyId, result.violations)
+        //console.log('Scan result', storyId, result.violations)
         results.push(result)
         options.onProgress({
           currentIndex: Number(s),

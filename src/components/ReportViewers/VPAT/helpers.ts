@@ -17,7 +17,7 @@ export function getResultsByImpact(results:AxeResultWithStoryId[]): ResultsByImp
     minor: []
   })
 }
-export function getRuleConformanceLevel(rule: WCAGRuleLink, report:Report): 'Supports' | 'Partially Supports' | 'Does Not Support' {
+export function getRuleConformanceLevel(rule: WCAGRuleLink, report:Report): 'No Violations Found' | 'Partially Supports' | 'Does Not Support' {
   const ruleResults = report.reduce<{violations:AxeResult[],storyId:string}[]>((acc, story) => {
     const violations = story.violations.filter(violation => violation.tags.includes(rule.ruleTag))
     if (violations.length > 0) {
@@ -30,7 +30,7 @@ export function getRuleConformanceLevel(rule: WCAGRuleLink, report:Report): 'Sup
   },[])
 
   if(ruleResults.length === 0) {
-    return "Supports"
+    return "No Violations Found"
   }
   else
   {
@@ -38,7 +38,7 @@ export function getRuleConformanceLevel(rule: WCAGRuleLink, report:Report): 'Sup
       const impactCount = getResultsByImpact(result.violations)
       if(impactCount.critical.length === 0 && impactCount.serious.length === 0) {
         if(impactCount.moderate.length === 0 && impactCount.minor.length === 0) {
-          return "Supports"
+          return "No Violations Found"
         }
         return "Partially Supports"
       }
