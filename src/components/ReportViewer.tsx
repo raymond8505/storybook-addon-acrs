@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import { PrintStyles } from "src/components/ReportViewers/PrintStyles";
 import { VPATReportViewer } from "src/components/ReportViewers/VPAT/VPATReportViewer";
 import { WCAGRuleLink } from "src/hooks/useVPATServer";
 
@@ -62,39 +63,7 @@ export function ReportViewer({id,ruleDefinitions,reportType}: {id?: string, rule
   }
 
   return <div id="report">
-    <style type="text/css" media="print">
-      {`
-        body, #root, #report, html {
-            -ms-overflow-style: none !important;
-            scrollbar-width: none !important;
-            overflow: visible !important;
-          }
-          body::-webkit-scrollbar, #root::-webkit-scrollbar, #report::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            background: transparent !important;
-          }
-        #root > div
-        {
-          display: block;
-          height: auto;
-        }
-        #tab-inner,
-        #tab-wrapper
-        {
-          padding: 0 !important;
-        }
-        #root > div > div:not(:nth-child(2)),
-        main > div:first-child,
-        #report-type-tabs,
-        #sidebar,
-        h1 {
-          display: none;
-        }
-        #reports {
-          width: 100%;
-        }`}
-    </style>
+    <PrintStyles />
     {getReportViewer(reportType, report, ruleDefinitions)}
   </div>
 }
