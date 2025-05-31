@@ -66,7 +66,7 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
     <H3>Using This Report</H3>
     <UL>
       <li>
-        <strong>THIS IS NOT A MAGIC BULLET!</strong>
+        <H4>THIS IS NOT A MAGIC BULLET!</H4>
         <p>
           This method only catches low hanging fruit. It is not a replacement for manually testing the app itself.{' '}
           Less than half of accessibility issues can be caught by automated testing. Even fewer when only testing components{' '}
@@ -79,6 +79,15 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
           This scan cannot determine intentionality of each component or its intended use, only whether the component contains known violations of the rules.
           This is one of the reasons this report is not a replacement for manual testing.
         </p>
+        <H5>The following rules are not covered by this report:</H5>
+          <UL>
+            {ruleDefinitions.filter(rule => !rule.tags).map((rule, index) => {
+              return <li key={index}>
+                <a href={rule.url} target="_blank">{rule.label}</a>
+              </li>
+            }
+            )}
+          </UL>
       </li>
       <li>
         <strong>Parent stories will show their child components' violations</strong>
