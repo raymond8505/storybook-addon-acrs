@@ -14,15 +14,22 @@ interface TabProps {
 
 const TabWrapper = styled.div(({ theme }) => ({
   background: theme.background.content,
-  padding: "4rem 0",
-  minHeight: "100vh",
+  padding: "2rem 0 0",
   minWidth: "100%",
   boxSizing: "border-box",
+  height: "100%",
+  overflow: "hidden",
 }));
 
 const TabInner = styled.div({
   marginLeft: "auto",
   marginRight: "auto",
+  maxWidth: "none",
+  padding: "0 0 0 10vmin",
+  height: "100%",
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'stretch',
 });
 
 const Sidebar = styled.div({
@@ -33,7 +40,9 @@ const Sidebar = styled.div({
 const Reports = styled.div({
   width: '85%',
   height: '100%',
-  
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'stretch'
 })
 
 const View = styled.div({
@@ -55,6 +64,7 @@ const ReportTypeTabs = styled.div({
   marginBottom: '10px',
   justifyContent: 'flex-start',
   gap: '2px',
+  justifySelf: 'flex-start',
 })
 
 const TabButton = styled(Button)<{ active?: boolean }>(({ active }) => ({
@@ -97,13 +107,8 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
   }
 
   return (
-    <TabWrapper style={{
-      height: "100%"
-    }} id="tab-wrapper">
-      <TabInner style={{
-        maxWidth: "none",
-        padding: "0 10vmin 4rem",
-      }} id="tab-inner">
+    <TabWrapper id="tab-wrapper">
+      <TabInner id="tab-inner">
         <H1>Accessibility Conformance Reports</H1>
         {connected ? <View>
           <Sidebar id="sidebar">

@@ -23,6 +23,8 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
   const stories = useMemo(() => sbState.index, [sbState.index])
   return <Table style={{
     width: "100%",
+    fontSize: '12px',
+    lineHeight: '1.5',
   }}>
     <thead>
       <tr>
@@ -42,7 +44,7 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
           <td><a href={rule.url} target="_blank">{rule.label}</a></td>
           <td>{conformanceLevel}</td>
           <td>
-            {conformanceLevel === "No Violations Found" ? '' : <DL>
+            {conformanceLevel === "No Violations Found" ? '' : <DL style={{fontSize: 'inherit', lineHeight: 'inherit'}}>
               {['critical', 'serious', 'moderate', 'minor'].map((impact) => {
                 const impactResults = violationsByImpact[impact as keyof ReturnType<typeof getResultsByImpact>].filter((result,index,arr) => {
                   return arr.findIndex(r => r.storyId === result.storyId) === index
@@ -54,8 +56,8 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
 
                 return <Fragment key={`${index}-${impact}`}>
                   <dt>{impact}</dt>
-                  <dd>
-                    <UL>
+                  <dd >
+                    <UL style={{fontSize: 'inherit', lineHeight: 'inherit'}}>
                       {impactResults.map((result,resultIndex) => {
                         const story = (stories[result.storyId] as API_StoryEntry)
 

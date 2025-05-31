@@ -62,7 +62,12 @@ export function ReportViewer({id,ruleDefinitions,reportType}: {id?: string, rule
     }
   }
 
-  return <div id="report">
+  return <div 
+          id="report" 
+          style={{
+            overflow: 'auto',
+            paddingRight: '10vmin'
+            }}>
     <PrintStyles />
     {getReportViewer(reportType, report, ruleDefinitions)}
   </div>
