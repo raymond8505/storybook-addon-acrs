@@ -32,7 +32,7 @@ export interface StoryResult
   }
 }
 export type Report = StoryResult[]
-export function ReportViewer({id,ruleDefinitions}: {id?: string, ruleDefinitions?: WCAGRuleLink[]})
+export function ReportViewer({id,ruleDefinitions,reportType}: {id?: string, ruleDefinitions?: WCAGRuleLink[],reportType: string})
 {
   const [report, setReport] = useState<Report|null>(null)
 
@@ -49,7 +49,52 @@ export function ReportViewer({id,ruleDefinitions}: {id?: string, ruleDefinitions
         })
       }
   },[id])
-  return <div>
-    <VPATReportViewer report={report} ruleDefinitions={ruleDefinitions} />
+
+  function getReportViewer(reportType: string, report: Report|null, ruleDefinitions?: WCAGRuleLink[])
+  {
+    switch(reportType)
+    {
+      case 'interactive':
+        return <div>Interactive</div>
+      default: 
+        return <VPATReportViewer report={report} ruleDefinitions={ruleDefinitions} />
+    }
+  }
+
+  return <div id="report">
+    <style type="text/css" media="print">
+      {`
+        body, #root, #report, html {
+            -ms-overflow-style: none !important;
+            scrollbar-width: none !important;
+            overflow: visible !important;
+          }
+          body::-webkit-scrollbar, #root::-webkit-scrollbar, #report::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            background: transparent !important;
+          }
+        #root > div
+        {
+          display: block;
+          height: auto;
+        }
+        #tab-inner,
+        #tab-wrapper
+        {
+          padding: 0 !important;
+        }
+        #root > div > div:not(:nth-child(2)),
+        main > div:first-child,
+        #report-type-tabs,
+        #sidebar,
+        h1 {
+          display: none;
+        }
+        #reports {
+          width: 100%;
+        }`}
+    </style>
+    {getReportViewer(reportType, report, ruleDefinitions)}
   </div>
 }

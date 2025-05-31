@@ -10,7 +10,7 @@
  */
 import { exposeParameters } from "src/decorators";
 import type { ProjectAnnotations, Renderer } from "storybook/internal/types";
-
+import './components/ReportViewers/print.css';
 const preview: ProjectAnnotations<Renderer> = {
 
   initialGlobals: {

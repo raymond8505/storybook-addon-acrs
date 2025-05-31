@@ -14,17 +14,20 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
     <H2>Accessibility Conformance Report</H2>
     <H3>(Based on VPAT® Version 2.4)</H3>
 
-    <H4>Methodology</H4>
+    <H3>Methodology</H3>
     <p>
       Storybook scanned using <a href="https://www.deque.com/axe/core-documentation/api-documentation/#section-1-introduction">Axe Core</a>.
     </p>
-    <H5>Scan Specs</H5>
+    <p>
+      Each story is loaded in its iframe view and scanned after the page loads and the body becomes visible. If the story has a delay parameter, the scan waits for the delay to complete before scanning.
+    </p>
+    <H4>Scan Specs</H4>
     <UL>
       <li><strong>Axe-core Version:</strong> {firstResult.testEngine.version}</li>
       <li><strong>Browser User Agent:</strong> {firstResult.testEnvironment.userAgent}</li>
       <li><strong>Browser Dimensions:</strong> {firstResult.testEnvironment.windowWidth}x{firstResult.testEnvironment.windowHeight}</li>
     </UL>
-    <H4>Conformance Levels</H4>
+    <H3>Conformance Levels</H3>
     <p>
       This report determines conformance levels based on the impact levels of 
       the violations found in this Storybook's components. <strong>Critical, Serious, Moderate, Minor</strong>{' '}
