@@ -104,7 +104,6 @@ export function useVPATServer({
   },[sendMessage, sendJSON])
 
   const runScan = useCallback((stories:string[]) => {
-
     setScanning(true)
     sendAction('run-scan',{
       stories
