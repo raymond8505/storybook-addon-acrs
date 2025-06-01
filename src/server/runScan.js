@@ -28,23 +28,29 @@ export async function runScan(stories, options = {
         waitUntil: 'load',
       });
 
-      
-
+      let parameters = {};
       try {
         await page.locator('body').waitFor({ state: 'visible', timeout: 10000 });
-      }
-      catch {}
-      finally {
         await page.waitForSelector('#storybook-parameters', {
           timeout: 10000,
           state: 'attached'
         });
 
-        const params = await page.evaluate(() => {
+         parameters = await page.evaluate(() => {
           return window.storyParameters;
         })
 
-        const delay = params?.acr?.delay ?? params?.chromatic?.delay ?? undefined;
+        if(parameters?.hasPlay){
+          await page.evaluate(() => {
+            return window.playFunction();
+          });
+        }
+      }
+      catch {}
+      finally {
+        
+
+        const delay = parameters?.acr?.delay ?? parameters?.chromatic?.delay ?? undefined;
 
         if(delay)
         {

@@ -40,6 +40,16 @@ export const Primary: Story = {
   },
 };
 
+export const WithPlay: Story = {
+  play: async ({ args, canvasElement }) => {
+    const canvas = canvasElement as HTMLCanvasElement;
+    const button = canvas.querySelector("button");
+    if (button) {
+      button.click();
+    }
+  }
+}
+
 export const Secondary: Story = {
   args: {
     label: "Button",

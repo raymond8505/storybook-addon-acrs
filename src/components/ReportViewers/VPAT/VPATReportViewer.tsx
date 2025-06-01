@@ -26,6 +26,14 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
       <li><strong>Axe-core Version:</strong> {firstResult.testEngine.version}</li>
       <li><strong>Browser User Agent:</strong> {firstResult.testEnvironment.userAgent}</li>
       <li><strong>Browser Dimensions:</strong> {firstResult.testEnvironment.windowWidth}x{firstResult.testEnvironment.windowHeight}</li>
+      <li><strong>WCAG Versions</strong>
+      <DL>
+        <dt>2.0</dt>
+        <dd>Level A, Level AA, Level AAA</dd>
+        <dt>2.1</dt>
+        <dd>Level A, Level AA</dd>
+      </DL>
+      </li>
     </UL>
     <H3>Conformance Levels</H3>
     <p>
@@ -66,15 +74,15 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
     <H3>Using This Report</H3>
     <UL>
       <li>
-        <H4>THIS IS NOT A MAGIC BULLET!</H4>
+        <H4><strong>THIS IS NOT A MAGIC BULLET!</strong></H4>
         <p>
           This method only catches low hanging fruit. It is not a replacement for manually testing the app itself.{' '}
-          Less than half of accessibility issues can be caught by automated testing. Even fewer when only testing components{' '}
-          in isolation. Use this report to nail your fundamentals and inform your best practices. <strong>This is meant to be{' '}
+          <strong>Less than half of accessibility issues can be caught by automated testing. Even fewer when only testing components{' '}
+          in isolation.</strong> Use this report to nail your fundamentals and inform your best practices. <strong>This is meant to be{' '}
           an internal document.</strong>
         </p>
         <p>
-          This report cannot determine if a rule is "supported" only that no violations were found for that rule.
+          This report cannot determine if a rule is "supported" only that no violations were found for that rule.{' '}
           <strong>Support</strong> is defined as the product functionality meeting the criterion without known defects or meets with equivalent facilitation.
           This scan cannot determine intentionality of each component or its intended use, only whether the component contains known violations of the rules.
           This is one of the reasons this report is not a replacement for manual testing.

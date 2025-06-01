@@ -7,6 +7,7 @@ import { styled } from "storybook/internal/theming";
 import { useVPATServer } from "src/hooks/useVPATServer";
 import { ReportViewer } from "src/components/ReportViewer";
 import { ScanProgress } from "src/components/ScanProgress";
+import { msToDateString } from "src/helpers";
 
 interface TabProps {
   active: boolean;
@@ -100,13 +101,15 @@ const ReportButton = styled.button<{ active?: boolean }>(({ active }) => ({
   textAlign: 'left',
   backgroundColor: active ? '#e0e0e0' : 'transparent',
   color: active ? '#007bff' : '#000',
-  padding: '10px',
+  padding: '5px',
   cursor: 'pointer',
   '&:hover': {
     backgroundColor: active ? '#d0d0d0' : '#f0f0f0',
   },
-  fontSize: '14px',
+  fontSize: '13px',
   border: 'none',
+  borderBottom: '1px solid #dedede',
+  marginBottom: '5px',
 }));
 export const Tab: React.FC<TabProps> = ({ active }) => {
 
@@ -148,7 +151,7 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                     onClick={() => updateGlobals({ report: encodeURIComponent(reportId) })}
                     active={globals.report === encodeURIComponent(reportId)}
                   >
-                    {reportId}
+                    {msToDateString(reportId)}
                   </ReportButton>
                 </li>
               ))}
