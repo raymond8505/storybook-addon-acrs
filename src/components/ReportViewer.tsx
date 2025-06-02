@@ -32,7 +32,7 @@ export interface StoryResult
     windowHeight: number;
   }
 }
-export type Report = StoryResult[]
+export type Report = {results: StoryResult[], errors: {storyId:string, error: Partial<Error>}[]}
 export function ReportViewer({id,ruleDefinitions,reportType}: {id?: string, ruleDefinitions?: WCAGRuleLink[],reportType: string})
 {
   const [report, setReport] = useState<Report|null>(null)

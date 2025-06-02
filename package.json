@@ -45,9 +45,10 @@
     "release": "yarn build && auto shipit",
     "storybook": "storybook dev -p 6006 --no-open --debug",
     "build-storybook": "storybook build",
-    "server:dev": "nodemon ./src/server/index.js --config ",
+    "server:dev": "nodemon ./src/server/index.js --ignore ./src/server/cli.js --ignore ./src/server/htdocs/reports",
     "test": "jest",
-    "rebuild-storybook": "node ./killStorybook.js && yarn storybook"
+    "rebuild-storybook": "node ./killStorybook.js && yarn storybook",
+    "cli:dev": "nodemon ./src/server/cli.js --ignore ./src/server/index.js --ignore ./src/server/htdocs/reports"
   },
   "nodemonConfig": {
     "ignore": [
@@ -67,6 +68,7 @@
     "port-pid": "^0.0.7"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^9.0.4",
     "@storybook/addon-essentials": "0.0.0-pr-26654-sha-49d01553",
     "@storybook/addon-interactions": "0.0.0-pr-26654-sha-49d01553",
     "@storybook/addon-links": "0.0.0-pr-26654-sha-49d01553",
@@ -117,7 +119,8 @@
     ]
   },
   "bin": {
-    "storybook-vpat-server": "./src/server/index.js"
+    "storybook-vpat-server": "./src/server/index.js",
+    "storybook-acr-cli": "./src/cli.js"
   },
   "storybook": {
     "displayName": "Accessibility Conformance Reports",

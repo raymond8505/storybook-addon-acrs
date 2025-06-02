@@ -1,16 +1,6 @@
 import { AxeBuilder } from '@axe-core/playwright';
 
 import playwright  from 'playwright';
-import util from 'util';
-
-function inspect(obj)
-{
-  return util.inspect(obj, {
-    showHidden: false,
-    depth: null,
-    colors: true
-  });
-}
 
 // Wait for all ongoing CSS transitions and animations to finish
 async function waitForAnimationsAndTransitions(page) {
@@ -71,6 +61,7 @@ export async function runScan(stories, options = {
 })
 {
   const results = []
+  const errors = []
 
   //for(const s in [{id:'ava-chatinterface--default'}]) {
   for(const s in stories) {
@@ -81,7 +72,7 @@ export async function runScan(stories, options = {
     const url = `http://localhost:6006/iframe.html?viewMode=story&id=${storyId}`
     try {
       await page.goto(url,{
-        waitUntil: 'load',
+        waitUntil: 'load'
       });
 
       let parameters = {};
@@ -96,24 +87,32 @@ export async function runScan(stories, options = {
           return window.storyParameters;
         })
 
-        if(parameters?.hasPlay){
-          await page.evaluate(() => {
-            return window.playFunction();
-          });
-        }
-
         await waitForAnimationsAndTransitions(page);
-      }
-      catch (e) {
-        console.error( storyId, e);
-      }
-      finally {
+
         const delay = parameters?.acr?.delay ?? parameters?.chromatic?.delay ?? undefined;
 
         if(delay)
         {
           await page.waitForTimeout(delay)
         }
+
+        if(parameters?.hasPlay){
+          await page.evaluate(() => {
+            return window.playFunction({canvasElement: document.querySelector('#storybook-root')});
+          });
+        }
+      }
+      catch (e) {
+        console.error( storyId, e);
+        errors.push({
+          storyId,
+          error: {
+            message: e.message
+          },
+        });
+      }
+      finally {
+        
 
         const builder = new AxeBuilder({ page });
         
@@ -142,5 +141,5 @@ export async function runScan(stories, options = {
     await browser.close();
   };
 
-  return results
+  return {results,errors}
 }

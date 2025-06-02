@@ -42,12 +42,13 @@ export const Primary: Story = {
 
 export const WithPlay: Story = {
   play: async ({ args, canvasElement }) => {
-    const canvas = canvasElement as HTMLCanvasElement;
+    const canvas = canvasElement;
     const button = canvas.querySelector("button");
     if (button) {
       button.click();
     }
-  }
+  },
+  args: {}
 }
 
 export const Secondary: Story = {

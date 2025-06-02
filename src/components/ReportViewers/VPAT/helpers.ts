@@ -18,7 +18,7 @@ export function getResultsByImpact(results:AxeResultWithStoryId[]): ResultsByImp
   })
 }
 export function getRuleConformanceLevel(rule: WCAGRuleLink, report:Report): 'No Violations Found' | 'Partially Supports' | 'Does Not Support' {
-  const ruleResults = report.reduce<{violations:AxeResult[],storyId:string}[]>((acc, story) => {
+  const ruleResults = report.results.reduce<{violations:AxeResult[],storyId:string}[]>((acc, story) => {
     const violations = story.violations.filter(violation => violation.tags.includes(rule.ruleTag))
     if (violations.length > 0) {
       acc.push({
@@ -50,7 +50,7 @@ export function getRuleConformanceLevel(rule: WCAGRuleLink, report:Report): 'No 
 }
 export function getViolationsByTag(report:Report, tag:string):AxeResultWithStoryId[] {
   
-  const resultsWithTag = [...report.filter(story => {
+  const resultsWithTag = [...report.results.filter(story => {
     return story.violations.some(violation => violation.tags.includes(tag))
   })]
 

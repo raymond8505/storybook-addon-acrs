@@ -2,13 +2,13 @@ import React from "react"
 import { Report } from "src/components/ReportViewer"
 import { RuleTable } from "src/components/ReportViewers/VPAT/RuleTable"
 import { WCAGRuleLink } from "src/hooks/useVPATServer"
-import { DL, H2, H3, H4, H5, UL } from "storybook/internal/components"
+import { DL, H2, H3, H4, H5, Table, UL } from "storybook/internal/components"
 export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, ruleDefinitions: WCAGRuleLink[]}){
   
-  if(!report || report.length === 0) {
+  if(!report || report.results.length === 0) {
     return null
   }
-  const firstResult = report?.[0]
+  const firstResult = report?.results[0]
   
   return <div>
     <H2>Accessibility Conformance Report</H2>
@@ -114,5 +114,29 @@ export function VPATReportViewer({report,ruleDefinitions}: {report?: Report, rul
     <RuleTable report={report} ruleDefinitions={ruleDefinitions} tags={['wcag2aa','wcag21aa','wcag22aa']} />
     <H3>Table 3: Success Criteria, Level AAA</H3>
     <RuleTable report={report} ruleDefinitions={ruleDefinitions} tags={['wcag2aaa']} />
+    <H3>Errors</H3>
+    {report.errors ? <Table style={{
+      width: '100%',
+    }}>
+      <thead>
+        <tr>
+          <th>Story</th>
+          <th>Error</th>
+        </tr>
+      </thead>
+      <tbody>
+        {report.errors.map((error, index) => (
+          <tr key={index}>
+            <td valign="top">{error.storyId}</td>
+            <td><pre style={{
+              wordBreak: 'break-all',
+              background: '#efefef',
+              border: '1px solid #ccc',
+              fontFamily: 'monospace',
+            }}>{error.error.message}</pre></td>
+          </tr>
+        ))}
+      </tbody>
+    </Table> : null}
   </div>
 }

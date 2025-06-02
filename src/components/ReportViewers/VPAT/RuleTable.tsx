@@ -18,9 +18,9 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
   })
 
   const sbState = useStorybookState()
+  const stories = useMemo(() => sbState.index, [sbState.index])
   const api = useStorybookApi()
   const [globals,updateGlobals] = useGlobals()
-  const stories = useMemo(() => sbState.index, [sbState.index])
   return <Table style={{
     width: "100%",
     fontSize: '12px',

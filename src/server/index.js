@@ -29,7 +29,7 @@ function getAllReports() {
     }
   }
 
-  return reports
+  return reports.reverse()
 }
 
 wsApp.ws('/vpat', function(ws, req) {
@@ -39,10 +39,18 @@ wsApp.ws('/vpat', function(ws, req) {
     switch(msg.action)
     {
       case 'run-scan':
-        //console.log('Running Scan', msg.payload.stories)
-        const id = createReport(await runScan(
-          //['player-videoheader--relative-layout-with-tap-to-unmute-disabled']
-          msg.payload.stories
+        const ids = msg.payload.stories
+        ws.send(JSON.stringify({
+              action: 'scan-progress',
+              payload: {
+                currentIndex: 0,
+                currentId: 'starting scan',
+                total: ids.length,
+                progress: 0
+              }
+            }))
+        const report = await runScan(
+          ids
           ,{
           onProgress: (progress) => {
             ws.send(JSON.stringify({
@@ -52,13 +60,19 @@ wsApp.ws('/vpat', function(ws, req) {
               }
             }))
           }
-        }))
+        })
+
+       const delivery = msg.payload.options?.delivery ?? 'save';
+       if(delivery === 'save')
+       {
+         const id = createReport(report)
+       }
         ws.send(JSON.stringify({
           action: 'report-created',
           payload: {
-            report : {
+            report : delivery === 'save' ? {
               id,
-            }
+            } : report,
           }
         }))
         break

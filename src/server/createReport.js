@@ -15,9 +15,9 @@ function trimResult(result)
     nodes: undefined,
   }
 }
-export function createReport(report)
+export function createReport({results,errors})
 {
-  const toSave = report.map((result) => {
+  const toSave = {results: results.map((result) => {
     return {
       ...result,
       inapplicable: undefined,
@@ -28,7 +28,9 @@ export function createReport(report)
       incomplete: result.incomplete.map(trimResult),
       timestamp: undefined
     }
-  })
+  })}
+
+  toSave.errors = errors
 
   const id = new Date().getTime()
   writeFileSync(`${__dirname}/htdocs/reports/${id}.json`, JSON.stringify(toSave, null), 'utf8');

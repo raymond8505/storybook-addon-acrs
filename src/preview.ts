@@ -8,7 +8,7 @@
  *
  * https://storybook.js.org/docs/react/writing-stories/decorators
  */
-import { exposeParameters } from "src/decorators";
+import { exposeParameters, instantTransitions } from "src/decorators";
 import type { ProjectAnnotations, Renderer } from "storybook/internal/types";
 
 const preview: ProjectAnnotations<Renderer> = {
@@ -16,7 +16,10 @@ const preview: ProjectAnnotations<Renderer> = {
   initialGlobals: {
     ['report']: undefined,
   },
-  decorators: [exposeParameters]
+  decorators: [
+    exposeParameters,
+    instantTransitions
+  ]
 };
 
 export default preview;
