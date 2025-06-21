@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { ScanProgress } from "../components/ScanProgress";
 
+import React from "react";
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<typeof ScanProgress> = {
   title: "Addon/ScanProgress",
@@ -24,7 +25,8 @@ export const Primary: Story = {
       currentId: "addon-scanprogress--primary",
       currentIndex: 1,
       total: 10,
-      progress: 0.5,
+      progress: 0.1,
+      estimatedMSRemaining: 2437967,
     },
   },
 };

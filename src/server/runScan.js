@@ -62,9 +62,13 @@ export async function runScan(stories, options = {
 {
   const results = []
   const errors = []
+  const scanTimes = []
+  let startTime;
 
   //for(const s in [{id:'ava-chatinterface--default'}]) {
   for(const s in stories) {
+    startTime = Date.now();
+
     const storyId = stories[s]
     const browser = await playwright.chromium.launch({headless: true});
     const context = await browser.newContext();
@@ -103,7 +107,7 @@ export async function runScan(stories, options = {
         }
       }
       catch (e) {
-        console.error( storyId, e);
+        //console.error( storyId, e);
         errors.push({
           storyId,
           error: {
@@ -120,9 +124,14 @@ export async function runScan(stories, options = {
           resultTypes: ['violations','incomplete'],
         }).analyze();
   
+        const endTime = Date.now();
+        const scanTime = endTime - startTime;
+        scanTimes.push(scanTime);
+        const estimatedMSRemaining = (scanTimes.reduce((a, b) => a + b, 0) / (scanTimes.length)) * (stories.length - scanTimes.length);
+        
         result.meta = {
           storyId,
-          
+          scanTime
         }
         //console.log('Scan result', storyId, result.violations)
         results.push(result)
@@ -131,6 +140,7 @@ export async function runScan(stories, options = {
           currentId: storyId,
           total: stories.length,
           progress: (s / stories.length),
+          estimatedMSRemaining
         })
       }
 

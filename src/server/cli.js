@@ -20,7 +20,7 @@ ws.on('open', function open() {
         action: 'run-scan', 
         payload: 
         {
-          stories: ['ava-chatinterface--default'], 
+          //stories: ['ava-chatinterface--default'], 
           options: {delivery: 'send'}
         }
       }
