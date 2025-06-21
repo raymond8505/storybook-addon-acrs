@@ -28,12 +28,27 @@ const ProgressBarFill = styled.div<{ barWidth: string }>`
 
 const DL = styled.dl`
   display: grid;
-  grid-template-columns: auto auto;
-  width: fit-content;
+  grid-template-columns: auto 1fr;
+  width: 100%;
+  border: 1px solid #ccc;
+  margin-top: 0.5em;
+  padding-top: 0.5em;
+
+  dt {
+    font-weight: bold;
+  }
+  dd,
+  dt {
+    margin: 0;
+    padding: 0.2em 0.5em;
+    line-height: 1.4;
+  }
 `;
 
 export function ScanProgress({ progress }: { progress: IScanProgress | null }) {
   const sbState = useStorybookState();
+
+  console.log({ sbState });
 
   const currentStory = useMemo(() => {
     return sbState.index?.[progress?.currentId] as API_StoryEntry;
@@ -54,13 +69,13 @@ export function ScanProgress({ progress }: { progress: IScanProgress | null }) {
         <dd>{msToHMS(progress.estimatedMSRemaining)}</dd>
         <dt>Progress:</dt>
         <dd>
-          {progress.currentIndex} / {progress.total} (
-          {Math.round(progress.progress * 100)}%)
+          {Math.round(progress.progress * 100)}% ({progress.currentIndex} /{" "}
+          {progress.total})
         </dd>
-        <dt>Current Story:</dt>
-        <dd>
+        <dt style={{ gridColumn: "1/3" }}>Current Story:</dt>
+        <dd style={{ gridColumn: "1/3", wordBreak: "break-all" }}>
           <div>{currentStory?.title ?? "Story Not Found"}</div>
-          <strong>{currentStory?.name ?? "Story Not Found"}</strong>
+          <div>{currentStory?.name ?? "Story Not Found"}</div>
         </dd>
       </DL>
     </Wrapper>

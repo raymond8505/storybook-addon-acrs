@@ -9,7 +9,21 @@ const meta: Meta<typeof ScanProgress> = {
   component: ScanProgress,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 
-  parameters: {},
+  parameters: {
+    storybookState: {
+      index: {
+        "example-introduction--docs": {
+          id: "example-introduction--docs",
+          title: "Example/Introduction",
+          name: "Docs",
+          importPath: "./src/stories/Introduction.mdx",
+          storiesImports: [],
+          type: "docs",
+          tags: ["dev", "test", "unattached-mdx"],
+        },
+      },
+    },
+  },
 };
 
 // t
@@ -22,7 +36,7 @@ export const Primary: Story = {
   // More on args: https://storybook.js.org/docs/react/writing-stories/args
   args: {
     progress: {
-      currentId: "addon-scanprogress--primary",
+      currentId: "example-introduction--docs",
       currentIndex: 1,
       total: 10,
       progress: 0.1,
