@@ -1,7 +1,7 @@
 {
   "name": "storybook-addon-vpat",
   "version": "0.0.0",
-  "description": "generate ACRs from your storybook",
+  "description": "Generate Accessibility Conformance Reports from your Storybook",
   "keywords": [
     "a11y",
     "VPAT",

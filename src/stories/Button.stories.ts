@@ -48,8 +48,8 @@ export const WithPlay: Story = {
       button.click();
     }
   },
-  args: {}
-}
+  args: {},
+};
 
 export const Secondary: Story = {
   args: {

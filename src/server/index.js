@@ -63,9 +63,10 @@ wsApp.ws('/vpat', function(ws, req) {
         })
 
        const delivery = msg.payload.options?.delivery ?? 'save';
+       let id;
        if(delivery === 'save')
        {
-         const id = createReport(report)
+         id = createReport(report)
        }
         ws.send(JSON.stringify({
           action: 'report-created',
