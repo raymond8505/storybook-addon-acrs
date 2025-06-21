@@ -5,24 +5,25 @@ const config: StorybookConfig = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
+    //"@storybook/addon-a11y",
     "./local-preset.js",
   ],
   framework: {
     name: "@storybook/react-vite",
-    options: {}
+    options: {},
   },
   async viteFinal(config) {
     // Merge custom configuration into the default config
-    const { mergeConfig } = await import('vite');
- 
+    const { mergeConfig } = await import("vite");
+
     const mergedConfig = mergeConfig(config, {
       build: {
         watch: {
           include: new RegExp(`${process.cwd()}/dist/.*`),
-        }
-      }
+        },
+      },
     });
-    
+
     return mergedConfig;
   },
   docs: {
