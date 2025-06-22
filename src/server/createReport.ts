@@ -20,7 +20,6 @@ export function createReport({ results, errors, meta }: ScanResult) {
   const toSave: ScanResult = {
     errors,
     meta,
-    // @ts-expect-error
     results: results.map((result: StoryScanResult) => {
       return {
         ...result,
@@ -34,7 +33,7 @@ export function createReport({ results, errors, meta }: ScanResult) {
         testEngine: undefined,
         testEnvironment: undefined,
         toolOptions: undefined,
-      };
+      } as StoryScanResult;
     }),
   };
 
