@@ -93,12 +93,12 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
               <ScanWrapper>
                 <ScanButtonWrapper>
                   <Button
-                    onClick={() => runScan(allStories.map((story) => story.id))}
+                    onClick={() => runScan(settings.stories)}
                     disabled={scanning}
                   >
                     Run Scan
                   </Button>
-                  <IconButton onClick={() => setSettingsOpen(!settingsOpen)}>
+                  <IconButton onClick={() => setSettingsOpen((prev) => !prev)}>
                     <CogIcon />
                   </IconButton>
                 </ScanButtonWrapper>
@@ -142,7 +142,6 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                 />
               ) : null}
             </Reports>
-            {settingsOpen ? <ScanSettings /> : null}
           </View>
         ) : (
           <div>Connecting To Server</div>

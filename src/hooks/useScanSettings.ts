@@ -12,12 +12,12 @@ export interface ScanSettings {
 export function useScanSettings() {
   const [settingsOpen, setSettingsOpen] = useAddonState(
     STATE.SCAN_SETTINGS_OPEN,
-    false,
+    true,
   );
 
   const [settings, setSettings] = useAddonState<ScanSettings>(
     STATE.SCAN_SETTINGS,
-    {},
+    JSON.parse(localStorage.getItem(STATE.SCAN_SETTINGS) ?? "{}"),
   );
 
   const { index } = useStorybookState();
@@ -31,6 +31,10 @@ export function useScanSettings() {
       setSettings(settings);
     }
   }, [settings, index]);
+
+  useEffect(() => {
+    localStorage.setItem(STATE.SCAN_SETTINGS, JSON.stringify(settings));
+  }, [settings]);
 
   return {
     settingsOpen,

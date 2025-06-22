@@ -2,13 +2,11 @@ import React from "react";
 import {
   addons,
   types,
-  useAddonState,
-  useParameter,
   useStorybookState,
 } from "storybook/internal/manager-api";
 
 import { Tab } from "./components/Tab";
-import { ADDON_ID, STATE, TAB_ID } from "src/constants";
+import { ADDON_ID, TAB_ID } from "src/constants";
 import { ScanSettings, useScanSettings } from "src/hooks/useScanSettings";
 import {
   BatchAcceptIcon,
@@ -26,7 +24,14 @@ import {
   API_StoryEntry,
 } from "storybook/internal/types";
 
-const StatusWrapper = styled.span``;
+const StatusWrapper = styled.span`
+  display: block;
+  background: white;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  padding: 4px;
+  line-height: 1;
+`;
 
 const Label = styled.label`
   display: flex;
@@ -74,9 +79,9 @@ function ItemIcon({
   }
   if (item.type === "story") {
     return settings.stories?.includes(item.id) ? (
-      <CheckIcon width={10} height={10} color="green" />
+      <CheckIcon width={10} height={10} color="#090" />
     ) : (
-      <CrossIcon width={10} height={10} color="red" />
+      <CrossIcon width={10} height={10} color="#900" />
     );
   } else {
     if (!index) {
@@ -90,9 +95,9 @@ function ItemIcon({
       settings.stories?.includes(id),
     );
     return !selectedStories.length ? (
-      <BatchDenyIcon height={10} width={10} color="red" />
+      <BatchDenyIcon height={10} width={10} color="#900" />
     ) : (
-      <BatchAcceptIcon height={10} width={10} color="green" />
+      <BatchAcceptIcon height={10} width={10} color="#090" />
     );
   }
 }
@@ -118,9 +123,29 @@ addons.register(ADDON_ID, (api) => {
               e.preventDefault();
 
               if (item.type === "story") {
-                settings.stories = settings.stories.filter(
-                  (id) => id !== item.id,
+                if (settings.stories?.includes(item.id)) {
+                  settings.stories = settings.stories.filter(
+                    (id) => id !== item.id,
+                  );
+                } else {
+                  settings.stories = [...(settings.stories ?? []), item.id];
+                }
+                setSettings(settings);
+              } else if (item.type !== "docs") {
+                const allChildren = getAllChildStoryIds(
+                  (item as EntryWithChildren).children ?? [],
+                  index,
                 );
+                if (settings.stories?.some((id) => allChildren.includes(id))) {
+                  settings.stories = settings.stories.filter(
+                    (id) => !allChildren.includes(id),
+                  );
+                } else {
+                  settings.stories = [
+                    ...(settings.stories ?? []),
+                    ...allChildren,
+                  ];
+                }
                 setSettings(settings);
               }
             }}
