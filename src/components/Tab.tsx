@@ -1,8 +1,13 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Button, H1 } from "storybook/internal/components";
-import { useGlobals, useStorybookState } from "storybook/internal/manager-api";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Button, H1, IconButton } from "storybook/internal/components";
+import {
+  useAddonState,
+  useGlobals,
+  useStorybookApi,
+  useStorybookState,
+} from "storybook/internal/manager-api";
 
-import { useVPATServer } from "src/hooks/useVPATServer";
+import { useReportServer } from "src/hooks/useReportServer";
 import { ReportViewer } from "src/components/ReportViewer";
 import { ScanProgress } from "src/components/ScanProgress";
 import { msToDateString } from "src/helpers";
@@ -17,15 +22,33 @@ import {
   TabWrapper,
   View,
 } from "src/components/Tab.styles";
+import { CogIcon } from "@storybook/icons";
+import { styled } from "storybook/internal/theming";
+import { ScanSettings } from "src/components/ScanSettings";
+import { STATE, TAB_ID } from "src/constants";
+import { useScanSettings } from "src/hooks/useScanSettings";
 
 interface TabProps {
   active: boolean;
 }
 
+const ScanWrapper = styled.div``;
+
+const ScanButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export const Tab: React.FC<TabProps> = ({ active }) => {
   const [globals, updateGlobals] = useGlobals();
-
+  const { settingsOpen, setSettingsOpen, settings } = useScanSettings();
   const sbState = useStorybookState();
+  const api = useStorybookApi();
+
+  useEffect(() => {
+    api.setSelectedPanel(TAB_ID);
+  }, [api]);
   const allStories = useMemo(
     () =>
       sbState.internal_index?.entries
@@ -43,7 +66,7 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
     scanProgress,
     connected,
     reports,
-  } = useVPATServer({
+  } = useReportServer({
     onReportCreated: useCallback(
       (report) => {
         updateGlobals({
@@ -67,13 +90,20 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
         {connected ? (
           <View>
             <Sidebar id="sidebar">
-              <Button
-                onClick={() => runScan(allStories.map((story) => story.id))}
-                disabled={scanning}
-              >
-                Run Scan
-              </Button>
-              {scanning ? <ScanProgress progress={scanProgress} /> : null}
+              <ScanWrapper>
+                <ScanButtonWrapper>
+                  <Button
+                    onClick={() => runScan(allStories.map((story) => story.id))}
+                    disabled={scanning}
+                  >
+                    Run Scan
+                  </Button>
+                  <IconButton onClick={() => setSettingsOpen(!settingsOpen)}>
+                    <CogIcon />
+                  </IconButton>
+                </ScanButtonWrapper>
+                {scanning ? <ScanProgress progress={scanProgress} /> : null}
+              </ScanWrapper>
               <ReportsList>
                 {reports.map((reportId) => (
                   <li key={reportId}>
@@ -112,6 +142,7 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                 />
               ) : null}
             </Reports>
+            {settingsOpen ? <ScanSettings /> : null}
           </View>
         ) : (
           <div>Connecting To Server</div>

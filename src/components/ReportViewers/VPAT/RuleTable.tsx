@@ -1,11 +1,11 @@
 import React, { Fragment, useMemo } from "react";
-import { Report } from "src/components/ReportViewer";
 import {
   getResultsByImpact,
   getRuleConformanceLevel,
   getViolationsByTag,
 } from "src/components/ReportViewers/VPAT/helpers";
-import { WCAGRuleLink } from "src/hooks/useVPATServer";
+import { WCAGRuleLink } from "src/hooks/useReportServer";
+import { ScanResult } from "src/server/runScan";
 import { DL, Table, UL } from "storybook/internal/components";
 import {
   useGlobals,
@@ -15,7 +15,7 @@ import {
 import { API_StoryEntry } from "storybook/internal/types";
 
 export interface RuleTableProps {
-  report: Report;
+  report: ScanResult;
   ruleDefinitions: WCAGRuleLink[];
   tags: string[];
 }

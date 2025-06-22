@@ -18,7 +18,7 @@ export interface ScanProgress {
   progress: number;
   estimatedMSRemaining: number;
 }
-export function useVPATServer({
+export function useReportServer({
   onReportCreated,
   onServerError,
 }: UseVPATServerProps) {
