@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { PrintStyles } from "src/components/ReportViewers/PrintStyles";
 import { VPATReportViewer } from "src/components/ReportViewers/VPAT/VPATReportViewer";
 import { WCAGRuleLink } from "src/hooks/useVPATServer";
-import { ScanMeta } from "src/server/runScan";
+import { ScanMeta, ScanResult } from "src/server/runScan";
 
 export interface AxeResult {
   id: string;
@@ -32,11 +32,6 @@ export interface RawStoryResult extends StoryResult {
     windowHeight: number;
   };
 }
-export type Report = {
-  results: StoryResult[];
-  errors: { storyId: string; error: Partial<Error> }[];
-  meta: ScanMeta;
-};
 export function ReportViewer({
   id,
   ruleDefinitions,
@@ -46,7 +41,7 @@ export function ReportViewer({
   ruleDefinitions?: WCAGRuleLink[];
   reportType: string;
 }) {
-  const [report, setReport] = useState<Report | null>(null);
+  const [report, setReport] = useState<ScanResult | null>(null);
   const [reportFetchError, setReportFetchError] = useState<any | null>(null);
 
   useEffect(() => {
@@ -69,7 +64,7 @@ export function ReportViewer({
 
   function getReportViewer(
     reportType: string,
-    report: Report | null,
+    report: ScanResult | null,
     ruleDefinitions?: WCAGRuleLink[],
   ) {
     switch (reportType) {

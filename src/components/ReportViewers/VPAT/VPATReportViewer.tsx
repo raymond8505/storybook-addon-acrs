@@ -1,14 +1,13 @@
 import React from "react";
-import { Report } from "src/components/ReportViewer";
 import { RuleTable } from "src/components/ReportViewers/VPAT/RuleTable";
 import { WCAGRuleLink } from "src/hooks/useVPATServer";
-import { ScanMeta } from "src/server/runScan";
+import { ScanMeta, ScanResult } from "src/server/runScan";
 import { DL, H2, H3, H4, H5, Table, UL } from "storybook/internal/components";
 export function VPATReportViewer({
   report,
   ruleDefinitions,
 }: {
-  report?: Report;
+  report?: ScanResult;
   ruleDefinitions: WCAGRuleLink[];
 }) {
   if (!report || report.results.length === 0) {
@@ -38,6 +37,10 @@ export function VPATReportViewer({
       </p>
       <H4>Scan Specs</H4>
       <UL>
+        <li>
+          <strong>Scan Date:</strong>{" "}
+          {new Date(meta.timestamp).toLocaleDateString()}
+        </li>
         <li>
           <strong>Axe-core Version:</strong> {meta.testEngine.version}
         </li>
