@@ -1,28 +1,36 @@
-
-import React from "react"
-import { DecoratorFunction } from "storybook/internal/types";
+import { ReactRenderer } from "@storybook/react/*";
+import React from "react";
+import { DecoratorFunction, PlayFunction } from "storybook/internal/types";
 
 declare global {
   interface Window {
-    storyParameters: Record<string, any>;
-    playFunction?: () => void;
+    storyParameters: Record<string, unknown>;
+    playFunction?: ({
+      canvasElement,
+    }: {
+      canvasElement: HTMLElement;
+    }) => Promise<void>;
   }
 }
-export const exposeParameters:DecoratorFunction = (Story,opts) => {
+export const exposeParameters: DecoratorFunction = (Story, opts) => {
   const parameters = {
     ...opts.parameters,
-    hasPlay: !!opts.playFunction
-  }
-  window.storyParameters = parameters
-  window.playFunction = opts.playFunction
+    hasPlay: !!opts.playFunction,
+  };
+  window.storyParameters = parameters;
+  window.playFunction = opts.playFunction;
 
-  return <>
-    <script type="application/json" id="storybook-parameters">{JSON.stringify(parameters)}</script>
-    {Story() as React.ReactElement}
-  </>
-  }
+  return (
+    <>
+      <script type="application/json" id="storybook-parameters">
+        {JSON.stringify(parameters)}
+      </script>
+      {Story() as React.ReactElement}
+    </>
+  );
+};
 
-  export const instantTransitions:DecoratorFunction = (Story) => {
+export const instantTransitions: DecoratorFunction = (Story) => {
   return (
     <>
       <style type="text/css">{`
@@ -53,4 +61,4 @@ export const exposeParameters:DecoratorFunction = (Story,opts) => {
       {Story() as React.ReactElement}
     </>
   );
-  }
+};

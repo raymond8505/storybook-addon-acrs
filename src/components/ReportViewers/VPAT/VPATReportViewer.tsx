@@ -2,6 +2,7 @@ import React from "react";
 import { Report } from "src/components/ReportViewer";
 import { RuleTable } from "src/components/ReportViewers/VPAT/RuleTable";
 import { WCAGRuleLink } from "src/hooks/useVPATServer";
+import { ScanMeta } from "src/server/runScan";
 import { DL, H2, H3, H4, H5, Table, UL } from "storybook/internal/components";
 export function VPATReportViewer({
   report,
@@ -13,7 +14,7 @@ export function VPATReportViewer({
   if (!report || report.results.length === 0) {
     return null;
   }
-  const firstResult = report?.results[0];
+  const meta: ScanMeta = report?.meta ?? ({} as ScanMeta);
 
   const showErrors = false;
 
@@ -38,16 +39,14 @@ export function VPATReportViewer({
       <H4>Scan Specs</H4>
       <UL>
         <li>
-          <strong>Axe-core Version:</strong> {firstResult.testEngine.version}
+          <strong>Axe-core Version:</strong> {meta.testEngine.version}
         </li>
         <li>
-          <strong>Browser User Agent:</strong>{" "}
-          {firstResult.testEnvironment.userAgent}
+          <strong>Browser User Agent:</strong> {meta.testEnvironment.userAgent}
         </li>
         <li>
           <strong>Browser Dimensions:</strong>{" "}
-          {firstResult.testEnvironment.windowWidth}x
-          {firstResult.testEnvironment.windowHeight}
+          {meta.testEnvironment.windowWidth}x{meta.testEnvironment.windowHeight}
         </li>
         <li>
           <strong>WCAG Versions</strong>
