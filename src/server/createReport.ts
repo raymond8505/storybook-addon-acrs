@@ -2,7 +2,7 @@ import { writeFileSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { type Result } from "axe-core";
-import { ScanResult } from "src/server/runScan";
+import { ScanResult, StoryScanResult } from "src/server/runScan";
 // @ts-expect-error
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -16,10 +16,12 @@ function trimResult(result: Result): Partial<Result> {
     nodes: undefined,
   };
 }
-export function createReport({ results, errors }: ScanResult) {
+export function createReport({ results, errors, meta }: ScanResult) {
   const toSave: ScanResult = {
+    errors,
+    meta,
     // @ts-expect-error
-    results: results.map((result) => {
+    results: results.map((result: StoryScanResult) => {
       return {
         ...result,
         inapplicable: undefined,
@@ -29,11 +31,12 @@ export function createReport({ results, errors }: ScanResult) {
         violations: result.violations.map(trimResult),
         incomplete: result.incomplete.map(trimResult),
         timestamp: undefined,
+        testEngine: undefined,
+        testEnvironment: undefined,
+        toolOptions: undefined,
       };
     }),
   };
-
-  toSave.errors = errors;
 
   const id = new Date().getTime();
   writeFileSync(

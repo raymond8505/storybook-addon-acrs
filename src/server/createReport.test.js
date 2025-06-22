@@ -11,3 +11,5 @@ describe('createReport', () => {
     createReport(report)
   })
 })
+
+export default {}

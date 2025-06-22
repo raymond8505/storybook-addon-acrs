@@ -67,9 +67,16 @@ export interface ScanError {
   };
 }
 
+export interface ScanMeta {
+  timestamp: number;
+  testEngine: AxeResults["testEngine"];
+  testEnvironment: AxeResults["testEnvironment"];
+  toolOptions: AxeResults["toolOptions"];
+}
 export interface ScanResult {
   results: StoryScanResult[];
   errors: ScanError[];
+  meta: ScanMeta;
 }
 
 export type StoryScanResult = AxeResults & {
@@ -89,11 +96,12 @@ export async function runScan(
   options: ScanOptions = {
     onProgress: () => {},
   },
-) {
+): Promise<ScanResult> {
   const results = [];
   const errors = [];
   const scanTimes = [];
-  let startTime;
+  let startTime = new Date().getTime();
+  const meta: Partial<ScanMeta> = { timestamp: startTime };
 
   //for(const s in [{id:'ava-chatinterface--default'}]) {
   for (const s in stories) {
@@ -104,6 +112,7 @@ export async function runScan(
     const context = await browser.newContext();
     const page = await context.newPage();
     const url = `http://localhost:6006/iframe.html?viewMode=story&id=${storyId}`;
+
     try {
       await page.goto(url, {
         waitUntil: "load",
@@ -156,6 +165,10 @@ export async function runScan(
           })
           .analyze();
 
+        meta.testEngine = result.testEngine;
+        meta.testEnvironment = result.testEnvironment;
+        meta.toolOptions = result.toolOptions;
+
         const endTime = Date.now();
         const scanTime = endTime - startTime;
         scanTimes.push(scanTime);
@@ -184,5 +197,5 @@ export async function runScan(
     await browser.close();
   }
 
-  return { results, errors };
+  return { results, errors, meta: meta as ScanMeta };
 }
