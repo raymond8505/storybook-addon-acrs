@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   addons,
   types,
@@ -6,7 +6,7 @@ import {
 } from "storybook/internal/manager-api";
 
 import { Tab } from "./components/Tab";
-import { ADDON_ID, TAB_ID } from "src/constants";
+import { ADDON_ID, EVENTS, TAB_ID } from "src/constants";
 import { ScanSettings, useScanSettings } from "src/hooks/useScanSettings";
 import {
   BatchAcceptIcon,
@@ -72,6 +72,16 @@ function ItemIcon({
   index: API_IndexHash;
   settings: ScanSettings;
 }) {
+  const channel = addons.getChannel();
+
+  useEffect(() => {
+    channel.on(EVENTS.SCAN_STORIES_ADDED, (stories: string[]) => {
+      console.log("Stories added:", stories);
+    });
+    channel.on(EVENTS.SCAN_STORIES_ADDED, (stories: string[]) => {
+      console.log("Stories removed:", stories);
+    });
+  }, [channel]);
   if (item.type === "docs") {
     return (
       <span style={{ width: 10, height: 10, display: "inline-block" }}></span>
@@ -115,6 +125,7 @@ addons.register(ADDON_ID, (api) => {
       renderLabel: (item) => {
         const { settingsOpen, settings, setSettings } = useScanSettings();
         const { index } = useStorybookState();
+        const channel = addons.getChannel();
 
         return settingsOpen && api.getQueryParam("tab") === TAB_ID ? (
           <Label
@@ -127,8 +138,10 @@ addons.register(ADDON_ID, (api) => {
                   settings.stories = settings.stories.filter(
                     (id) => id !== item.id,
                   );
+                  channel.emit(EVENTS.SCAN_STORIES_REMOVED, [item.id]);
                 } else {
                   settings.stories = [...(settings.stories ?? []), item.id];
+                  channel.emit(EVENTS.SCAN_STORIES_ADDED, [item.id]);
                 }
                 setSettings(settings);
               } else if (item.type !== "docs") {

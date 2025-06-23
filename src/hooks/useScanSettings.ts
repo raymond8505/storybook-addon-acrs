@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { STATE } from "src/constants";
 import {
   useAddonState,
+  useStorybookApi,
   useStorybookState,
 } from "storybook/internal/manager-api";
 
@@ -15,12 +16,15 @@ export function useScanSettings() {
     true,
   );
 
+  const { index, theme } = useStorybookState();
+  const api = useStorybookApi();
+
+  const localStorageId = `${theme.brandUrl}/${STATE.SCAN_SETTINGS}`;
+
   const [settings, setSettings] = useAddonState<ScanSettings>(
     STATE.SCAN_SETTINGS,
-    JSON.parse(localStorage.getItem(STATE.SCAN_SETTINGS) ?? "{}"),
+    JSON.parse(localStorage.getItem(localStorageId) ?? "{}"),
   );
-
-  const { index } = useStorybookState();
 
   useEffect(() => {
     if (!settings.stories && index) {
@@ -33,7 +37,7 @@ export function useScanSettings() {
   }, [settings, index]);
 
   useEffect(() => {
-    localStorage.setItem(STATE.SCAN_SETTINGS, JSON.stringify(settings));
+    localStorage.setItem(localStorageId, JSON.stringify(settings));
   }, [settings]);
 
   return {

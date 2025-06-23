@@ -48,8 +48,6 @@ const DL = styled.dl`
 export function ScanProgress({ progress }: { progress: IScanProgress | null }) {
   const sbState = useStorybookState();
 
-  console.log({ sbState });
-
   const currentStory = useMemo(() => {
     return sbState.index?.[progress?.currentId] as API_StoryEntry;
   }, [sbState, progress?.currentId]);

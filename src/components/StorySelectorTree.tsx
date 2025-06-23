@@ -10,7 +10,6 @@ export function StorySelectorTree({
 }) {
   const index = { ...indexIn };
 
-  console.log({ index });
   return (
     <UL>
       {Object.entries(index)
