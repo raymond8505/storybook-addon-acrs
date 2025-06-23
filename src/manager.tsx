@@ -74,14 +74,13 @@ function ItemIcon({
 }) {
   const channel = addons.getChannel();
 
-  useEffect(() => {
-    channel.on(EVENTS.SCAN_STORIES_ADDED, (stories: string[]) => {
-      console.log("Stories added:", stories);
-    });
-    channel.on(EVENTS.SCAN_STORIES_ADDED, (stories: string[]) => {
-      console.log("Stories removed:", stories);
-    });
-  }, [channel]);
+  channel.on(EVENTS.SCAN_STORIES_ADDED, (stories: string[]) => {
+    console.log("Stories added:", stories);
+  });
+  channel.on(EVENTS.SCAN_STORIES_ADDED, (stories: string[]) => {
+    console.log("Stories removed:", stories);
+  });
+
   if (item.type === "docs") {
     return (
       <span style={{ width: 10, height: 10, display: "inline-block" }}></span>
@@ -122,13 +121,25 @@ addons.register(ADDON_ID, (api) => {
 
   addons.setConfig({
     sidebar: {
+      // todo: move to own component module
       renderLabel: (item) => {
         const { settingsOpen, settings, setSettings } = useScanSettings();
         const { index } = useStorybookState();
-        const channel = addons.getChannel();
+        const [counter, setCounter] = React.useState(0);
+        const ref = React.useRef<HTMLLabelElement>(null);
 
+        useEffect(() => {
+          if (ref.current) {
+            // @ts-expect-error
+            ref.current.rerender = () => {
+              setCounter((prev) => prev + 1);
+            };
+          }
+        }, []);
         return settingsOpen && api.getQueryParam("tab") === TAB_ID ? (
           <Label
+            ref={ref}
+            data-counter={counter}
             onClick={(e) => {
               e.stopPropagation();
               e.preventDefault();
@@ -138,10 +149,8 @@ addons.register(ADDON_ID, (api) => {
                   settings.stories = settings.stories.filter(
                     (id) => id !== item.id,
                   );
-                  channel.emit(EVENTS.SCAN_STORIES_REMOVED, [item.id]);
                 } else {
                   settings.stories = [...(settings.stories ?? []), item.id];
-                  channel.emit(EVENTS.SCAN_STORIES_ADDED, [item.id]);
                 }
                 setSettings(settings);
               } else if (item.type !== "docs") {
@@ -160,7 +169,16 @@ addons.register(ADDON_ID, (api) => {
                   ];
                 }
                 setSettings(settings);
+
+                allChildren.forEach((id) => {
+                  document
+                    .querySelector(`[data-item-id="${id}"] label`)
+                    // @ts-expect-error
+                    ?.rerender();
+                });
               }
+
+              setCounter((prev) => prev + 1);
             }}
           >
             <StatusWrapper>
