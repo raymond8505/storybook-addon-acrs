@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { InteractiveReportViewer } from "src/components/ReportViewers/Interactive/InteractiveReportViewer";
 import { PrintStyles } from "src/components/ReportViewers/PrintStyles";
 import { VPATReportViewer } from "src/components/ReportViewers/VPAT/VPATReportViewer";
 import { WCAGRuleLink } from "src/hooks/useVPATServer";
@@ -69,7 +70,7 @@ export function ReportViewer({
   ) {
     switch (reportType) {
       case "interactive":
-        return <div>Interactive</div>;
+        return <InteractiveReportViewer report={report} />;
       default:
         return (
           <VPATReportViewer report={report} ruleDefinitions={ruleDefinitions} />

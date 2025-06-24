@@ -1,8 +1,9 @@
 import React, { Fragment, useMemo } from "react";
+import { AxeResultWithStoryId } from "src/components/ReportViewer";
 import {
   getResultsByImpact,
+  getResultsByTag,
   getRuleConformanceLevel,
-  getViolationsByTag,
 } from "src/components/ReportViewers/VPAT/helpers";
 import { WCAGRuleLink } from "src/hooks/useReportServer";
 import { ScanResult } from "src/server/runScan";
@@ -46,8 +47,27 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
       <tbody>
         {tableRules.map((rule, index) => {
           const conformanceLevel = getRuleConformanceLevel(rule, report);
-          const ruleViolations = getViolationsByTag(report, rule.ruleTag);
+          const ruleViolations = getResultsByTag(
+            report,
+            rule.ruleTag,
+            "violations",
+          );
+          const ruleIncompletes = getResultsByTag(
+            report,
+            rule.ruleTag,
+            "incomplete",
+          );
           const violationsByImpact = getResultsByImpact(ruleViolations);
+
+          const incompleteByImpact = getResultsByImpact(ruleIncompletes);
+
+          const uniqueByStoryId = (
+            result: AxeResultWithStoryId,
+            index: number,
+            arr: AxeResultWithStoryId[],
+          ) => {
+            return arr.findIndex((r) => r.storyId === result.storyId) === index;
+          };
           return (
             <tr key={index}>
               <td>
@@ -63,15 +83,18 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
                   <DL style={{ fontSize: "inherit", lineHeight: "inherit" }}>
                     {["critical", "serious", "moderate", "minor"].map(
                       (impact) => {
-                        const impactResults = violationsByImpact[
-                          impact as keyof ReturnType<typeof getResultsByImpact>
-                        ].filter((result, index, arr) => {
-                          return (
-                            arr.findIndex(
-                              (r) => r.storyId === result.storyId,
-                            ) === index
-                          );
-                        });
+                        const impactResults = [
+                          ...violationsByImpact[
+                            impact as keyof ReturnType<
+                              typeof getResultsByImpact
+                            >
+                          ].filter(uniqueByStoryId),
+                          ...incompleteByImpact[
+                            impact as keyof ReturnType<
+                              typeof getResultsByImpact
+                            >
+                          ].filter(uniqueByStoryId),
+                        ];
 
                         if (impactResults.length === 0) {
                           return null;
