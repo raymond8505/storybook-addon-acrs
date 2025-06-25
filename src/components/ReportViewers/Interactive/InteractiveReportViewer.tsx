@@ -3,6 +3,7 @@ import { ScanResult } from "src/server/runScan";
 import {
   Button,
   H2,
+  IconButton,
   Table as StyledTable,
 } from "storybook/internal/components";
 import {
@@ -14,7 +15,7 @@ import axe from "axe-core";
 import { Select, Statistic, Table, Tag } from "antd";
 import { arraysOverlap, download } from "src/helpers";
 import { styled } from "storybook/internal/theming";
-import { DownloadIcon } from "@storybook/icons";
+import { DownloadIcon, QuestionIcon } from "@storybook/icons";
 
 const Fieldset = styled.fieldset`
   &,
@@ -50,6 +51,12 @@ const ResultCounts = styled.div`
 
 const Header = styled.header`
   text-align: center;
+`;
+
+const HelpTitle = styled.strong`
+  display: flex;
+  align-items: center;
+  gap: 5px;
 `;
 
 function violationLabel(violation: axe.Result) {
@@ -292,11 +299,12 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
             const rule = rulesMap.get(record.id);
             return (
               <div>
-                <strong>
+                <HelpTitle>
+                  <QuestionIcon />
                   <a href={rule.helpUrl} target="_blank" rel="noreferrer">
                     {rule.help}
                   </a>
-                </strong>
+                </HelpTitle>
                 <p>{rule.description}</p>
                 <div>
                   {record.tags.map((tag, i) => (
