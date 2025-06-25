@@ -1,6 +1,6 @@
 import React from "react";
 import { RuleTable } from "src/components/ReportViewers/VPAT/RuleTable";
-import { WCAGRuleLink } from "src/hooks/useVPATServer";
+import { WCAGRuleLink } from "src/hooks/useReportServer";
 import { ScanMeta, ScanResult } from "src/server/runScan";
 import { DL, H2, H3, H4, H5, Table, UL } from "storybook/internal/components";
 export function VPATReportViewer({

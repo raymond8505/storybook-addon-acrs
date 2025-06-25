@@ -12,14 +12,10 @@ import { exposeParameters, instantTransitions } from "src/decorators";
 import type { ProjectAnnotations, Renderer } from "storybook/internal/types";
 
 const preview: ProjectAnnotations<Renderer> = {
-
   initialGlobals: {
-    ['report']: undefined,
+    ["report"]: "interactive",
   },
-  decorators: [
-    exposeParameters,
-    instantTransitions
-  ]
+  decorators: [exposeParameters, instantTransitions],
 };
 
 export default preview;

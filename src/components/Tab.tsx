@@ -77,7 +77,7 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
     ),
   });
 
-  const [currentReportTab, setCurrentReportTab] = useState("vpat");
+  const [currentReportTab, setCurrentReportTab] = useState("interactive");
 
   if (!active) {
     return null;
