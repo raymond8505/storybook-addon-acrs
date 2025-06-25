@@ -1,15 +1,20 @@
 import React, { useMemo, useState } from "react";
 import { ScanResult } from "src/server/runScan";
-import { Button, H2, Table, UL } from "storybook/internal/components";
+import {
+  Button,
+  H2,
+  Table as StyledTable,
+} from "storybook/internal/components";
 import {
   useStorybookApi,
   useStorybookState,
 } from "storybook/internal/manager-api";
 import { API_StoryEntry } from "storybook/internal/types";
 import axe from "axe-core";
-import { Select, Statistic } from "antd";
+import { Select, Statistic, Table, Tag } from "antd";
 import { arraysOverlap, download } from "src/helpers";
 import { styled } from "storybook/internal/theming";
+import { DownloadIcon } from "@storybook/icons";
 
 const Fieldset = styled.fieldset`
   &,
@@ -21,6 +26,7 @@ const Fieldset = styled.fieldset`
   grid-template-columns: repeat(3, 1fr) auto;
   gap: 10px;
   position: sticky;
+  z-index: 1;
   top: 0;
   background: white;
 
@@ -37,7 +43,7 @@ const ResultCounts = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-  gap: 10px;
+  gap: 3%;
   font-size: 14px;
   margin: 10px 0;
 `;
@@ -84,19 +90,29 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
     return report.results.map((result) => {
       const newResult = { ...result };
 
+      newResult.violations = newResult.violations.map((violation) => ({
+        ...violation,
+        tags: [...violation.tags, "violation"],
+      }));
+
+      newResult.incomplete = newResult.incomplete.map((violation) => ({
+        ...violation,
+        tags: [...violation.tags, "incomplete"],
+      }));
+
       if (ruleFilters.length) {
-        newResult.violations = result.violations.filter(forRuleId);
-        newResult.incomplete = result.incomplete.filter(forRuleId);
+        newResult.violations = newResult.violations.filter(forRuleId);
+        newResult.incomplete = newResult.incomplete.filter(forRuleId);
       }
 
       if (tagFilters.length) {
-        newResult.violations = result.violations.filter(forTags);
-        newResult.incomplete = result.incomplete.filter(forTags);
+        newResult.violations = newResult.violations.filter(forTags);
+        newResult.incomplete = newResult.incomplete.filter(forTags);
       }
 
       if (impactFilters.length) {
-        newResult.violations = result.violations.filter(forImpact);
-        newResult.incomplete = result.incomplete.filter(forImpact);
+        newResult.violations = newResult.violations.filter(forImpact);
+        newResult.incomplete = newResult.incomplete.filter(forImpact);
       }
 
       return newResult;
@@ -106,13 +122,36 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
   if (!report || report.results.length === 0) {
     return null;
   }
+
+  const rulesMap = new Map(axe.getRules().map((rule) => [rule.ruleId, rule]));
   return (
     <div>
       <Header>
         <H2>Interactive Accessibility Conformance Report</H2>
       </Header>
       <ResultCounts>
-        <Statistic value={filteredResults.length} title="Stories" />
+        <Statistic
+          value={
+            filteredResults
+              .filter((r) => r.violations.length > 0 || r.incomplete.length > 0)
+              .map(
+                (result) =>
+                  (stories[result.meta.storyId] as API_StoryEntry)?.title,
+              )
+              .filter((component, index, self) => {
+                return self.indexOf(component) === index;
+              }).length
+          }
+          title="Components"
+        />
+        <Statistic
+          value={
+            filteredResults.filter(
+              (r) => r.violations.length > 0 || r.incomplete.length > 0,
+            ).length
+          }
+          title="Stories"
+        />
 
         <Statistic
           value={filteredResults.reduce((acc, cur) => {
@@ -160,6 +199,7 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
             onChange={(value) => {
               setRuleFilters(value);
             }}
+            allowClear={true}
           />
         </label>
         <label>
@@ -168,7 +208,8 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
             options={axe
               .getRules()
               .flatMap((rule) => rule.tags)
-              .filter((tag, index, self) => self.indexOf(tag) === index) // Unique tags
+              .filter((tag, index, self) => self.indexOf(tag) === index)
+              .concat(["violation", "incomplete"])
               .map((tag) => ({
                 label: tag,
                 value: tag,
@@ -178,6 +219,7 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
             onChange={(value) => {
               setTagFilters(value);
             }}
+            allowClear={true}
           />
         </label>
         <label>
@@ -221,79 +263,97 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
             }}
           >
             Download
+            <DownloadIcon color="#090" />
           </Button>
         </span>
       </Fieldset>
 
       <Table
-        style={{
-          width: "100%",
-          fontSize: "14px",
-          lineHeight: "1.5",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>Story</th>
-            <th>Violations</th>
-            <th>Incomplete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredResults.map((storyResult, index) => {
-            const story = stories[storyResult.meta.storyId] as API_StoryEntry;
-
-            if (
-              storyResult.violations.length === 0 &&
-              storyResult.incomplete.length === 0
-            ) {
-              return null; // Skip stories with no violations or incomplete results
-            }
-
-            const numRows = Math.max(
-              storyResult.violations.length,
-              storyResult.incomplete.length,
+        dataSource={filteredResults.flatMap((result) => {
+          const story = stories[result.meta.storyId] as API_StoryEntry;
+          return [
+            ...result.violations.map((violation, i) => ({
+              ...violation,
+              story,
+              type: "Violation",
+              key: `${result.meta.storyId}-violation-${i}`,
+            })),
+            ...result.incomplete.map((violation, i) => ({
+              ...violation,
+              story,
+              type: "Incomplete",
+              key: `${result.meta.storyId}-incomplete-${i}`,
+            })),
+          ];
+        })}
+        rowKey="key"
+        expandable={{
+          expandedRowRender: (record) => {
+            const rule = rulesMap.get(record.id);
+            return (
+              <div>
+                <strong>
+                  <a href={rule.helpUrl} target="_blank" rel="noreferrer">
+                    {rule.help}
+                  </a>
+                </strong>
+                <p>{rule.description}</p>
+                <div>
+                  {record.tags.map((tag, i) => (
+                    <Tag key={`${record.key}-${record.id}__${tag}--${i}`}>
+                      {tag}
+                    </Tag>
+                  ))}
+                </div>
+              </div>
             );
-
-            const rows = [];
-            for (let r = 0; r < numRows; r++) {
-              rows.push(
-                <tr key={`result-${index}__row-${r}`}>
-                  {r === 0 ? (
-                    <td rowSpan={numRows}>
-                      <a
-                        href={`index.html?path=/story/${story?.id}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          api.selectStory(story.id);
-                          api.setQueryParams({
-                            tab: undefined,
-                          });
-                        }}
-                      >
-                        {story?.title} - {story?.name}
-                      </a>
-                    </td>
-                  ) : null}
-                  <td>
-                    {storyResult.violations?.[r]
-                      ? violationLabel(storyResult.violations?.[r])
-                      : ""}
-                  </td>
-                  <td>
-                    {storyResult.incomplete?.[r]
-                      ? violationLabel(storyResult.incomplete?.[r])
-                      : ""}
-                  </td>
-                </tr>,
+          },
+          rowExpandable: (record) => rulesMap.has(record.id),
+        }}
+        columns={[
+          {
+            title: "Story",
+            dataIndex: "story-name",
+            render: (text, record) => (
+              <a
+                href={`index.html?path=/story/${record.story?.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  api.selectStory(record.story.id);
+                  api.setQueryParams({
+                    tab: undefined,
+                  });
+                }}
+              >
+                {record.story?.title} - {record.story?.name}
+              </a>
+            ),
+          },
+          {
+            title: "Rule",
+            render: (text, record) => {
+              const rule = rulesMap.get(record.id);
+              return (
+                <div>
+                  <strong>{rule.ruleId}</strong>
+                </div>
               );
-            }
-
-            return rows;
-          })}
-        </tbody>
-      </Table>
+            },
+            dataIndex: "violation-rule",
+          },
+          {
+            title: "Type",
+            render: (text, record) => record.type,
+            dataIndex: "violation-type",
+          },
+          {
+            title: "Impact",
+            render: (text, record) => record.impact,
+            dataIndex: "violation-impact",
+          },
+        ]}
+      />
     </div>
   );
 }
