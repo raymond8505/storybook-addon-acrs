@@ -16,29 +16,8 @@ import { Select, Statistic, Table, Tag } from "antd";
 import { arraysOverlap, download } from "src/helpers";
 import { styled } from "storybook/internal/theming";
 import { DownloadIcon, QuestionIcon } from "@storybook/icons";
-
-const Fieldset = styled.fieldset`
-  &,
-  > * {
-    display: grid;
-    align-items: center;
-  }
-
-  grid-template-columns: repeat(3, 1fr) auto;
-  gap: 10px;
-  position: sticky;
-  z-index: 1;
-  top: 0;
-  background: white;
-
-  > * {
-    grid-template-columns: auto 1fr;
-  }
-
-  > * > *:first-child {
-    margin-right: 5px;
-  }
-`;
+import { TagSelect } from "src/components/controls/TagSelect";
+import { Fieldset } from "src/components/controls/styles";
 
 const ResultCounts = styled.div`
   display: flex;
@@ -174,7 +153,7 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
           title="Incomplete"
         />
 
-        {["critical", "serious", "moderate", "minor"].map((impact) => (
+        {["Critical", "Serious", "Moderate", "Minor"].map((impact) => (
           <Statistic
             key={`impact-${impact}`}
             title={impact}
@@ -193,7 +172,7 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
         ))}
       </ResultCounts>
 
-      <Fieldset>
+      <Fieldset columns={3}>
         <legend>Filters</legend>
         <label>
           <span>Rule:</span>
@@ -211,7 +190,13 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
         </label>
         <label>
           <span>Tags:</span>
-          <Select
+          <TagSelect
+            extraOptions={["violation", "incomplete"]}
+            onChange={(value) => {
+              setTagFilters(value);
+            }}
+          />
+          {/* <Select
             options={axe
               .getRules()
               .flatMap((rule) => rule.tags)
@@ -227,7 +212,7 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
               setTagFilters(value);
             }}
             allowClear={true}
-          />
+          /> */}
         </label>
         <label>
           <span>Impact:</span>
@@ -357,7 +342,8 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
           },
           {
             title: "Impact",
-            render: (text, record) => record.impact,
+            render: (text, record) =>
+              record.impact.charAt(0).toUpperCase() + record.impact.slice(1),
             dataIndex: "violation-impact",
           },
         ]}

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { STATE } from "src/constants";
 import {
   useAddonState,
@@ -6,24 +6,33 @@ import {
   useStorybookState,
 } from "storybook/internal/manager-api";
 
-export interface ScanSettings {
+export interface ReportSettings {
   stories?: string[];
-  tags?: string[];
+  tags?: {
+    include: string[];
+    exclude: string[];
+  };
 }
-export function useScanSettings() {
-  const [settingsOpen, setSettingsOpen] = useAddonState(
-    STATE.SCAN_SETTINGS_OPEN,
-    true,
-  );
+export function useReportSettings() {
+  const [settingsOpen, setSettingsOpen] = useState(true);
 
   const { index, theme } = useStorybookState();
   const api = useStorybookApi();
 
-  const localStorageId = `${theme.brandUrl}/${STATE.SCAN_SETTINGS}`;
+  const localStorageId = `${theme.brandUrl}/${STATE.REPORT_SETTINGS}`;
 
-  const [settings, setSettings] = useAddonState<ScanSettings>(
-    STATE.SCAN_SETTINGS,
-    JSON.parse(localStorage.getItem(localStorageId) ?? "{}"),
+  const [settings, setSettings] = useState<ReportSettings>(
+    (() => {
+      const storedVal = localStorage.getItem(localStorageId);
+      if (storedVal) return JSON.parse(localStorage.getItem(localStorageId));
+      return {
+        stories: undefined,
+        tags: {
+          include: [],
+          exclude: [],
+        },
+      };
+    })(),
   );
 
   useEffect(() => {
@@ -44,7 +53,7 @@ export function useScanSettings() {
     settingsOpen,
     setSettingsOpen,
     settings,
-    setSettings: (newSettings: ScanSettings) => {
+    setSettings: (newSettings: ReportSettings) => {
       setSettings({
         ...newSettings,
       });

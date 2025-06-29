@@ -24,9 +24,10 @@ import {
 } from "src/components/Tab.styles";
 import { CogIcon } from "@storybook/icons";
 import { styled } from "storybook/internal/theming";
-import { ScanSettings } from "src/components/ScanSettings";
+import { ReportSettings } from "src/components/ReportSettings";
 import { STATE, TAB_ID } from "src/constants";
-import { useScanSettings } from "src/hooks/useScanSettings";
+import { useReportSettings } from "src/hooks/useReportSettings";
+import { Empty } from "antd";
 
 interface TabProps {
   active: boolean;
@@ -42,7 +43,7 @@ const ScanButtonWrapper = styled.div`
 
 export const Tab: React.FC<TabProps> = ({ active }) => {
   const [globals, updateGlobals] = useGlobals();
-  const { settingsOpen, setSettingsOpen, settings } = useScanSettings();
+  const { settingsOpen, setSettingsOpen, settings } = useReportSettings();
   const sbState = useStorybookState();
   const api = useStorybookApi();
 
@@ -83,6 +84,8 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
     return null;
   }
 
+  console.log({ settingsOpen });
+
   return (
     <TabWrapper id="tab-wrapper">
       <TabInner id="tab-inner">
@@ -98,7 +101,7 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                   >
                     Run Scan
                   </Button>
-                  <IconButton onClick={() => setSettingsOpen((prev) => !prev)}>
+                  <IconButton onClick={() => setSettingsOpen(!settingsOpen)}>
                     <CogIcon />
                   </IconButton>
                 </ScanButtonWrapper>
@@ -119,32 +122,42 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
                 ))}
               </ReportsList>
             </Sidebar>
-            <Reports id="reports">
-              <ReportTypeTabs id="report-type-tabs">
-                <TabButton
-                  active={currentReportTab === "vpat"}
-                  onClick={() => setCurrentReportTab("vpat")}
-                >
-                  VPAT
-                </TabButton>
-                <TabButton
-                  active={currentReportTab === "interactive"}
-                  onClick={() => setCurrentReportTab("interactive")}
-                >
-                  Interactive
-                </TabButton>
-              </ReportTypeTabs>
-              {globals.report ? (
-                <ReportViewer
-                  id={globals.report}
-                  ruleDefinitions={ruleDefinitions}
-                  reportType={currentReportTab}
-                />
-              ) : null}
-            </Reports>
+            {settingsOpen ? (
+              <ReportSettings />
+            ) : (
+              <Reports id="reports">
+                <ReportTypeTabs id="report-type-tabs">
+                  <TabButton
+                    active={currentReportTab === "vpat"}
+                    onClick={() => setCurrentReportTab("vpat")}
+                  >
+                    VPAT
+                  </TabButton>
+                  <TabButton
+                    active={currentReportTab === "interactive"}
+                    onClick={() => setCurrentReportTab("interactive")}
+                  >
+                    Interactive
+                  </TabButton>
+                </ReportTypeTabs>
+                {globals.report ? (
+                  <ReportViewer
+                    id={globals.report}
+                    ruleDefinitions={ruleDefinitions}
+                    reportType={currentReportTab}
+                  />
+                ) : null}
+              </Reports>
+            )}
           </View>
         ) : (
-          <div>Connecting To Server</div>
+          <Empty
+            description={
+              <span>
+                Please connect to the report server to view or run scans.
+              </span>
+            }
+          />
         )}
       </TabInner>
     </TabWrapper>

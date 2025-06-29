@@ -7,7 +7,7 @@ import {
 
 import { Tab } from "./components/Tab";
 import { ADDON_ID, EVENTS, TAB_ID } from "src/constants";
-import { ScanSettings, useScanSettings } from "src/hooks/useScanSettings";
+import { ReportSettings, useReportSettings } from "src/hooks/useReportSettings";
 import {
   BatchAcceptIcon,
   BatchDenyIcon,
@@ -70,7 +70,7 @@ function ItemIcon({
 }: {
   item: API_HashEntry;
   index: API_IndexHash;
-  settings: ScanSettings;
+  settings: ReportSettings;
 }) {
   const channel = addons.getChannel();
 
@@ -123,7 +123,7 @@ addons.register(ADDON_ID, (api) => {
     sidebar: {
       // todo: move to own component module
       renderLabel: (item) => {
-        const { settingsOpen, settings, setSettings } = useScanSettings();
+        const { settingsOpen, settings, setSettings } = useReportSettings();
         const { index } = useStorybookState();
         const [counter, setCounter] = React.useState(0);
         const ref = React.useRef<HTMLLabelElement>(null);
