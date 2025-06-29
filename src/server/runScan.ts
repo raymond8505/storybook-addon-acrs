@@ -1,7 +1,7 @@
 import { AxeBuilder } from "@axe-core/playwright";
 import { AxeResults } from "axe-core";
 import playwright from "playwright";
-import { type ScanProgress } from "src/hooks/useVPATServer";
+import { type ScanProgress } from "src/hooks/useReportServer";
 // Wait for all ongoing CSS transitions and animations to finish
 async function waitForAnimationsAndTransitions(page: playwright.Page) {
   await page.evaluate(() => {

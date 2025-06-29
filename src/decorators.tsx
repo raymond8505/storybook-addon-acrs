@@ -1,5 +1,5 @@
 import { ReactRenderer } from "@storybook/react/*";
-import React from "react";
+import { ReactElement } from "react";
 import { DecoratorFunction, PlayFunction } from "storybook/internal/types";
 
 declare global {
@@ -25,7 +25,7 @@ export const exposeParameters: DecoratorFunction = (Story, opts) => {
       <script type="application/json" id="storybook-parameters">
         {JSON.stringify(parameters)}
       </script>
-      {Story() as React.ReactElement}
+      {Story() as ReactElement}
     </>
   );
 };
@@ -58,7 +58,7 @@ export const instantTransitions: DecoratorFunction = (Story) => {
         -ms-animation-delay: 0s !important; 
         }
       `}</style>
-      {Story() as React.ReactElement}
+      {Story() as ReactElement}
     </>
   );
 };

@@ -1,6 +1,6 @@
+import React from "react";
 import { styled } from "storybook/internal/theming";
 import { Button } from "storybook/internal/components";
-
 export const TabWrapper = styled.div(({ theme }) => ({
   background: theme.background.content,
   padding: "2rem 0 0",

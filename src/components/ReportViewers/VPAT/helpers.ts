@@ -1,11 +1,6 @@
-import {
-  AxeResult,
-  AxeResultWithStoryId,
-  Report,
-  StoryResult,
-} from "src/components/ReportViewer";
-import { WCAGRuleLink } from "src/hooks/useVPATServer";
-import { ScanResult } from "src/server/runScan";
+import { AxeResult, AxeResultWithStoryId } from "src/components/ReportViewer";
+import { WCAGRuleLink } from "src/hooks/useReportServer";
+import { ScanResult, StoryScanResult } from "src/server/runScan";
 
 export type ResultsByImpact = {
   critical: AxeResultWithStoryId[];
@@ -32,11 +27,9 @@ export function getResultsByImpact(
 }
 export function getRuleConformanceLevel(
   rule: WCAGRuleLink,
-  report: Report,
+  report: ScanResult,
 ): "No Violations Found" | "Partially Supports" | "Does Not Support" {
-  const ruleResults = report.results.reduce<
-    { violations: AxeResult[]; storyId: string }[]
-  >((acc, story) => {
+  const ruleResults = report.results.reduce((acc, story) => {
     const violations = story.violations.filter((violation) =>
       violation.tags.includes(rule.ruleTag),
     );

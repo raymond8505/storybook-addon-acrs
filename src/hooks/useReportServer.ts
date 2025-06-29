@@ -6,7 +6,7 @@ export interface WCAGRuleLink {
   tags?: string[];
   ruleTag?: string;
 }
-export interface UseVPATServerProps {
+export interface UseReportServerProps {
   onReportCreated?: (report: Record<string, string>) => void;
   onServerError?: (ev: Event) => any;
 }
@@ -21,7 +21,7 @@ export interface ScanProgress {
 export function useReportServer({
   onReportCreated,
   onServerError,
-}: UseVPATServerProps) {
+}: UseReportServerProps) {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
   const [ruleDefinitions, setRuleDefinitions] = useState<WCAGRuleLink[]>([]);

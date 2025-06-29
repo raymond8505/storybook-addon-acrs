@@ -1,5 +1,5 @@
-import { ScanProgress as IScanProgress } from "src/hooks/useVPATServer";
-import React, { useMemo } from "react";
+import { ScanProgress as IScanProgress } from "src/hooks/useReportServer";
+import { useMemo } from "react";
 import { useStorybookState } from "storybook/internal/manager-api";
 import { API_StoryEntry } from "storybook/internal/types";
 import { styled } from "@storybook/theming";

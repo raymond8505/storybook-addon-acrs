@@ -1,6 +1,6 @@
+import React from "react";
 import { Select } from "antd";
 import axe from "axe-core";
-import React from "react";
 
 export interface TagSElectProps {
   onChange?: (value: string[]) => void;

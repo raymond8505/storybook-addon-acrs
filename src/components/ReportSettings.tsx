@@ -1,4 +1,3 @@
-import React from "react";
 import { Fieldset } from "src/components/controls/styles";
 import { TagSelect } from "src/components/controls/TagSelect";
 import { useReportSettings } from "src/hooks/useReportSettings";
@@ -6,7 +5,7 @@ import { useReportSettings } from "src/hooks/useReportSettings";
 import { H2 } from "storybook/internal/components";
 
 import { styled } from "storybook/internal/theming";
-
+import React from "react";
 const Wrapper = styled.div`
   width: 85%;
   height: 100%;
@@ -18,7 +17,7 @@ export function ReportSettings() {
   return (
     <Wrapper>
       <H2>Report Settings</H2>
-      <Fieldset columns={2}>
+      <Fieldset columns={2} sticky={false}>
         <legend>Tags</legend>
         <label>
           <span>Include:</span>

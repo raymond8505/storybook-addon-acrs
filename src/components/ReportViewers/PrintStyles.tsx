@@ -1,9 +1,10 @@
-import React from "react"
+import React from "react";
 /**
  * These styles hide everything but the current report when printing.
  */
 export function PrintStyles() {
-  return <style type="text/css" media="print">
+  return (
+    <style type="text/css" media="print">
       {`
       * {
         scrollbar-width: none !important;      /* Firefox */
@@ -43,7 +44,7 @@ export function PrintStyles() {
       }
       tr:nth-of-type(2n) {
         background-color: transparent !important;
-      }`
-      }
+      }`}
     </style>
+  );
 }

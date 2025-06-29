@@ -18,6 +18,7 @@ import { styled } from "storybook/internal/theming";
 import { DownloadIcon, QuestionIcon } from "@storybook/icons";
 import { TagSelect } from "src/components/controls/TagSelect";
 import { Fieldset } from "src/components/controls/styles";
+import { useReportSettings } from "src/hooks/useReportSettings";
 
 const ResultCounts = styled.div`
   display: flex;
@@ -55,6 +56,7 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
   const [ruleFilters, setRuleFilters] = useState<string[]>([]);
   const [tagFilters, setTagFilters] = useState<string[]>([]);
   const [impactFilters, setImpactFilters] = useState<string[]>([]);
+  const { settings } = useReportSettings();
 
   const filteredResults = useMemo(() => {
     if (!report || report.results.length === 0) {
@@ -73,6 +75,10 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
       return arraysOverlap(tagFilters ?? [], violation.tags);
     }
 
+    function excludedTags(violation: axe.Result) {
+      return !arraysOverlap(settings.tags.exclude, violation.tags);
+    }
+
     return report.results.map((result) => {
       const newResult = { ...result };
 
@@ -86,6 +92,10 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
         tags: [...violation.tags, "incomplete"],
       }));
 
+      if (settings.tags.exclude.length) {
+        newResult.violations = newResult.violations.filter(excludedTags);
+        newResult.incomplete = newResult.incomplete.filter(excludedTags);
+      }
       if (ruleFilters.length) {
         newResult.violations = newResult.violations.filter(forRuleId);
         newResult.incomplete = newResult.incomplete.filter(forRuleId);
@@ -103,7 +113,7 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
 
       return newResult;
     });
-  }, [report?.results, ruleFilters, tagFilters, impactFilters]);
+  }, [report?.results, ruleFilters, tagFilters, impactFilters, settings]);
 
   if (!report || report.results.length === 0) {
     return null;
@@ -196,23 +206,6 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
               setTagFilters(value);
             }}
           />
-          {/* <Select
-            options={axe
-              .getRules()
-              .flatMap((rule) => rule.tags)
-              .filter((tag, index, self) => self.indexOf(tag) === index)
-              .concat(["violation", "incomplete"])
-              .map((tag) => ({
-                label: tag,
-                value: tag,
-              }))}
-            placeholder="Select Tags"
-            mode="tags"
-            onChange={(value) => {
-              setTagFilters(value);
-            }}
-            allowClear={true}
-          /> */}
         </label>
         <label>
           <span>Impact:</span>

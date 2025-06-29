@@ -1,5 +1,5 @@
 import { ArrowDownIcon } from "@storybook/icons";
-import React, { Fragment, useState } from "react";
+import React, { FC, Fragment, useState } from "react";
 import { styled } from "storybook/internal/theming";
 
 type Item = {
@@ -66,7 +66,7 @@ const Description = styled.div(({ theme }) => ({
   textAlign: "left",
 }));
 
-export const ListItem: React.FC<ListItemProps> = ({ item }) => {
+export const ListItem: FC<ListItemProps> = ({ item }) => {
   const [open, onToggle] = useState(false);
 
   return (
@@ -86,7 +86,7 @@ export const ListItem: React.FC<ListItemProps> = ({ item }) => {
   );
 };
 
-export const List: React.FC<ListProps> = ({ items }) => (
+export const List: FC<ListProps> = ({ items }) => (
   <ListWrapper>
     {items.map((item, idx) => (
       <ListItem key={idx} item={item}></ListItem>

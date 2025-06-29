@@ -14,7 +14,7 @@ export interface ReportSettings {
   };
 }
 export function useReportSettings() {
-  const [settingsOpen, setSettingsOpen] = useState(true);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const { index, theme } = useStorybookState();
   const api = useStorybookApi();

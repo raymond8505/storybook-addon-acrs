@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 import { Button, H1, IconButton } from "storybook/internal/components";
 import {
   useAddonState,
@@ -41,7 +41,7 @@ const ScanButtonWrapper = styled.div`
   justify-content: space-between;
 `;
 
-export const Tab: React.FC<TabProps> = ({ active }) => {
+export const Tab: FC<TabProps> = ({ active }) => {
   const [globals, updateGlobals] = useGlobals();
   const { settingsOpen, setSettingsOpen, settings } = useReportSettings();
   const sbState = useStorybookState();
@@ -83,8 +83,6 @@ export const Tab: React.FC<TabProps> = ({ active }) => {
   if (!active) {
     return null;
   }
-
-  console.log({ settingsOpen });
 
   return (
     <TabWrapper id="tab-wrapper">

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   addons,
   types,
@@ -125,8 +125,8 @@ addons.register(ADDON_ID, (api) => {
       renderLabel: (item) => {
         const { settingsOpen, settings, setSettings } = useReportSettings();
         const { index } = useStorybookState();
-        const [counter, setCounter] = React.useState(0);
-        const ref = React.useRef<HTMLLabelElement>(null);
+        const [counter, setCounter] = useState(0);
+        const ref = useRef<HTMLLabelElement>(null);
 
         useEffect(() => {
           if (ref.current) {
@@ -174,7 +174,7 @@ addons.register(ADDON_ID, (api) => {
                   document
                     .querySelector(`[data-item-id="${id}"] label`)
                     // @ts-expect-error
-                    ?.rerender();
+                    ?.rerender?.();
                 });
               }
 
