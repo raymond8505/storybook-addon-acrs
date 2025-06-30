@@ -19,6 +19,7 @@ import { DownloadIcon, QuestionIcon } from "@storybook/icons";
 import { TagSelect } from "src/components/controls/TagSelect";
 import { Fieldset } from "src/components/controls/styles";
 import { useReportSettings } from "src/hooks/useReportSettings";
+import { RuleSelect } from "src/components/controls/RuleSelect";
 
 const ResultCounts = styled.div`
   display: flex;
@@ -67,6 +68,16 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
       return ruleFilters?.includes(violation.id) ?? true;
     }
 
+    function excludedRules(violation: axe.Result) {
+      const rules = settings.rules.exclude;
+
+      if (rules) {
+        return !rules.includes(violation.id);
+      }
+
+      return true;
+    }
+
     function forImpact(violation: axe.Result) {
       return impactFilters?.includes(violation.impact) ?? true;
     }
@@ -95,6 +106,11 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
       if (settings.tags.exclude.length) {
         newResult.violations = newResult.violations.filter(excludedTags);
         newResult.incomplete = newResult.incomplete.filter(excludedTags);
+      }
+
+      if (settings.rules.exclude.length) {
+        newResult.violations = newResult.violations.filter(excludedRules);
+        newResult.incomplete = newResult.incomplete.filter(excludedRules);
       }
       if (ruleFilters.length) {
         newResult.violations = newResult.violations.filter(forRuleId);
@@ -186,16 +202,10 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
         <legend>Filters</legend>
         <label>
           <span>Rule:</span>
-          <Select
-            options={axe
-              .getRules()
-              .map((rule) => ({ label: rule.ruleId, value: rule.ruleId }))}
-            placeholder="Select Rules"
-            mode="tags"
+          <RuleSelect
             onChange={(value) => {
               setRuleFilters(value);
             }}
-            allowClear={true}
           />
         </label>
         <label>

@@ -12,6 +12,10 @@ export interface ReportSettings {
     include: string[];
     exclude: string[];
   };
+  rules?: {
+    include: string[];
+    exclude: string[];
+  };
 }
 export function useReportSettings() {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -28,6 +32,10 @@ export function useReportSettings() {
       return {
         stories: undefined,
         tags: {
+          include: [],
+          exclude: [],
+        },
+        rules: {
           include: [],
           exclude: [],
         },
