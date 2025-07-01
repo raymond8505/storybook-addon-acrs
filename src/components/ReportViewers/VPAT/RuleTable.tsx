@@ -1,4 +1,5 @@
 import React, { Fragment, useMemo } from "react";
+import { StoryLink } from "src/components/controls/StoryLink";
 import { AxeResultWithStoryId } from "src/components/ReportViewer";
 import {
   getResultsByImpact,
@@ -119,19 +120,7 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
                                     <li
                                       key={`${index}-${impact}-${result.id}-${resultIndex}`}
                                     >
-                                      <a
-                                        href="#"
-                                        onClick={(e) => {
-                                          e.preventDefault();
-                                          e.stopPropagation();
-                                          api.selectStory(story.id);
-                                          api.setQueryParams({
-                                            tab: undefined,
-                                          });
-                                        }}
-                                      >
-                                        {story.title} - {story.name}
-                                      </a>
+                                      <StoryLink story={story} />
                                     </li>
                                   ) : null;
                                 })}

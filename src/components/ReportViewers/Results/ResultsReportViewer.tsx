@@ -22,6 +22,7 @@ import { Fieldset } from "src/components/controls/styles";
 import { useReportSettings } from "src/hooks/useReportSettings";
 import { RuleSelect } from "src/components/controls/RuleSelect";
 import { AxeTableResult } from "src/types";
+import { StoryLink } from "src/components/controls/StoryLink";
 
 const ResultCounts = styled.div`
   display: flex;
@@ -141,7 +142,7 @@ export function ResultsReportViewer({ report }: { report: ScanResult }) {
   return (
     <div>
       <Header>
-        <H2>Interactive Accessibility Conformance Report</H2>
+        <H2>Report Results</H2>
       </Header>
       <ResultCounts>
         <Statistic
@@ -319,21 +320,7 @@ export function ResultsReportViewer({ report }: { report: ScanResult }) {
                 `${b.story?.title} - ${b.story?.name}`,
               );
             },
-            render: (_, record) => (
-              <a
-                href={`index.html?path=/story/${record.story?.id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  api.selectStory(record.story.id);
-                  api.setQueryParams({
-                    tab: undefined,
-                  });
-                }}
-              >
-                {record.story?.title} - {record.story?.name}
-              </a>
-            ),
+            render: (_, record) => <StoryLink story={record.story} />,
           },
           {
             title: "Rule",

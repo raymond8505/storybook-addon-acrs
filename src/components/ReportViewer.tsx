@@ -4,6 +4,7 @@ import { PrintStyles } from "src/components/ReportViewers/PrintStyles";
 import { VPATReportViewer } from "src/components/ReportViewers/VPAT/VPATReportViewer";
 import { WCAGRuleLink } from "src/hooks/useReportServer";
 import { ScanMeta, ScanResult } from "src/server/runScan";
+import { OverviewViewer } from "src/components/ReportViewers/Overview/OverviewViewer";
 
 export interface AxeResult {
   id: string;
@@ -64,14 +65,16 @@ export function ReportViewer({
   }, [id]);
 
   function getReportViewer(
-    reportType: string,
+    reportType: "VPAT" | "results" | "overview" | string,
     report: ScanResult | null,
     ruleDefinitions?: WCAGRuleLink[],
   ) {
     switch (reportType) {
       case "results":
         return <ResultsReportViewer report={report} />;
-      case "disagnostics":
+      case "overview":
+        return <OverviewViewer report={report} />;
+      case "VPAT":
       default:
         return (
           <VPATReportViewer report={report} ruleDefinitions={ruleDefinitions} />

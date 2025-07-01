@@ -62,9 +62,7 @@ export interface ScanOptions {
 
 export interface ScanError {
   storyId: string;
-  error: {
-    message: string;
-  };
+  error: Record<string, unknown>;
 }
 
 export interface ScanMeta {
@@ -112,7 +110,7 @@ export async function runScan(
     const context = await browser.newContext();
     const page = await context.newPage();
     const url = `http://localhost:6006/iframe.html?viewMode=story&id=${storyId}`;
-
+    const timeout = 5000;
     try {
       console.log(`Scanning story: ${storyId}`);
       await page.goto(url, {
@@ -121,11 +119,9 @@ export async function runScan(
 
       let parameters: ExpectedParameters = {};
       try {
-        await page
-          .locator("body")
-          .waitFor({ state: "visible", timeout: 10000 });
+        await page.locator("body").waitFor({ state: "attached", timeout });
         await page.waitForSelector("#storybook-parameters", {
-          timeout: 10000,
+          timeout,
           state: "attached",
         });
 
@@ -155,9 +151,7 @@ export async function runScan(
         console.error(storyId, e);
         errors.push({
           storyId,
-          error: {
-            message: e.message,
-          },
+          error: { ...e },
         });
       } finally {
         const builder = new AxeBuilder({ page });

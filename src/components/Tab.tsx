@@ -78,7 +78,7 @@ export const Tab: FC<TabProps> = ({ active }) => {
     ),
   });
 
-  const [currentReportTab, setCurrentReportTab] = useState("results");
+  const [currentReportTab, setCurrentReportTab] = useState("overview");
 
   if (!active) {
     return null;
@@ -138,10 +138,10 @@ export const Tab: FC<TabProps> = ({ active }) => {
                     Results
                   </TabButton>
                   <TabButton
-                    active={currentReportTab === "disagnostics"}
-                    onClick={() => setCurrentReportTab("disagnostics")}
+                    active={currentReportTab === "overview"}
+                    onClick={() => setCurrentReportTab("overview")}
                   >
-                    Diagnostics
+                    Overview
                   </TabButton>
                 </ReportTypeTabs>
                 {globals.report ? (

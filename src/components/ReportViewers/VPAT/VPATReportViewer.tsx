@@ -2,7 +2,7 @@ import React from "react";
 import { RuleTable } from "src/components/ReportViewers/VPAT/RuleTable";
 import { WCAGRuleLink } from "src/hooks/useReportServer";
 import { ScanMeta, ScanResult } from "src/server/runScan";
-import { DL, H2, H3, H4, H5, Table, UL } from "storybook/internal/components";
+import { DL, H2, H3, H4, H5, UL } from "storybook/internal/components";
 export function VPATReportViewer({
   report,
   ruleDefinitions,
@@ -14,8 +14,6 @@ export function VPATReportViewer({
     return null;
   }
   const meta: ScanMeta = report?.meta ?? ({} as ScanMeta);
-
-  const showErrors = false;
 
   return (
     <div>
@@ -184,40 +182,6 @@ export function VPATReportViewer({
         ruleDefinitions={ruleDefinitions}
         tags={["wcag2aaa"]}
       />
-      {showErrors ? <H3>Errors</H3> : null}
-      {showErrors && report.errors ? (
-        <Table
-          style={{
-            width: "100%",
-          }}
-        >
-          <thead>
-            <tr>
-              <th>Story</th>
-              <th>Error</th>
-            </tr>
-          </thead>
-          <tbody>
-            {report.errors.map((error, index) => (
-              <tr key={index}>
-                <td valign="top">{error.storyId}</td>
-                <td>
-                  <pre
-                    style={{
-                      wordBreak: "break-all",
-                      background: "#efefef",
-                      border: "1px solid #ccc",
-                      fontFamily: "monospace",
-                    }}
-                  >
-                    {error.error.message}
-                  </pre>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      ) : null}
     </div>
   );
 }
