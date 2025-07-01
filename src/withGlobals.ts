@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useGlobals } from "storybook/internal/preview-api";
 import type {
   Renderer,

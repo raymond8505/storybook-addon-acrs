@@ -7,6 +7,7 @@ import {
   Table as StyledTable,
 } from "storybook/internal/components";
 import {
+  StoryEntry,
   useStorybookApi,
   useStorybookState,
 } from "storybook/internal/manager-api";
@@ -20,6 +21,7 @@ import { TagSelect } from "src/components/controls/TagSelect";
 import { Fieldset } from "src/components/controls/styles";
 import { useReportSettings } from "src/hooks/useReportSettings";
 import { RuleSelect } from "src/components/controls/RuleSelect";
+import { AxeTableResult } from "src/types";
 
 const ResultCounts = styled.div`
   display: flex;
@@ -50,7 +52,7 @@ function violationLabel(violation: axe.Result) {
     </div>
   );
 }
-export function InteractiveReportViewer({ report }: { report: ScanResult }) {
+export function ResultsReportViewer({ report }: { report: ScanResult }) {
   const api = useStorybookApi();
   const sbState = useStorybookState();
   const stories = useMemo(() => sbState.index, [sbState.index]);
@@ -263,20 +265,20 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
         </span>
       </Fieldset>
 
-      <Table
+      <Table<AxeTableResult>
         dataSource={filteredResults.flatMap((result) => {
           const story = stories[result.meta.storyId] as API_StoryEntry;
           return [
             ...result.violations.map((violation, i) => ({
               ...violation,
               story,
-              type: "Violation",
+              type: "Violation" as AxeTableResult["type"],
               key: `${result.meta.storyId}-violation-${i}`,
             })),
             ...result.incomplete.map((violation, i) => ({
               ...violation,
               story,
-              type: "Incomplete",
+              type: "Incomplete" as AxeTableResult["type"],
               key: `${result.meta.storyId}-incomplete-${i}`,
             })),
           ];
@@ -310,7 +312,14 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
           {
             title: "Story",
             dataIndex: "story-name",
-            render: (text, record) => (
+            defaultSortOrder: "ascend",
+            sortDirections: ["ascend", "descend"],
+            sorter: (a, b) => {
+              return `${a.story?.title} - ${a.story?.name}`.localeCompare(
+                `${b.story?.title} - ${b.story?.name}`,
+              );
+            },
+            render: (_, record) => (
               <a
                 href={`index.html?path=/story/${record.story?.id}`}
                 onClick={(e) => {
@@ -328,26 +337,39 @@ export function InteractiveReportViewer({ report }: { report: ScanResult }) {
           },
           {
             title: "Rule",
-            render: (text, record) => {
-              const rule = rulesMap.get(record.id);
+            render: (_, record) => {
               return (
                 <div>
-                  <strong>{rule.ruleId}</strong>
+                  <strong>{record.id}</strong>
                 </div>
               );
             },
+            defaultSortOrder: "ascend",
+            sortDirections: ["ascend", "descend"],
+            sorter: (a, b) => a.id.localeCompare(b.id),
             dataIndex: "violation-rule",
           },
           {
             title: "Type",
             render: (text, record) => record.type,
             dataIndex: "violation-type",
+            defaultSortOrder: "descend",
+            sortDirections: ["ascend", "descend"],
+            sorter: (a, b) => a.type.localeCompare(b.type),
           },
           {
             title: "Impact",
             render: (text, record) =>
               record.impact.charAt(0).toUpperCase() + record.impact.slice(1),
             dataIndex: "violation-impact",
+            defaultSortOrder: "descend",
+            sortDirections: ["ascend", "descend"],
+            sorter: (a, b) => {
+              const impacts = ["critical", "serious", "moderate", "minor"];
+              return impacts.indexOf(a.impact) > impacts.indexOf(b.impact)
+                ? -1
+                : 1;
+            },
           },
         ]}
       />

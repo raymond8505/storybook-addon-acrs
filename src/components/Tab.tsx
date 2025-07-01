@@ -78,7 +78,7 @@ export const Tab: FC<TabProps> = ({ active }) => {
     ),
   });
 
-  const [currentReportTab, setCurrentReportTab] = useState("interactive");
+  const [currentReportTab, setCurrentReportTab] = useState("results");
 
   if (!active) {
     return null;
@@ -132,10 +132,16 @@ export const Tab: FC<TabProps> = ({ active }) => {
                     VPAT
                   </TabButton>
                   <TabButton
-                    active={currentReportTab === "interactive"}
-                    onClick={() => setCurrentReportTab("interactive")}
+                    active={currentReportTab === "results"}
+                    onClick={() => setCurrentReportTab("results")}
                   >
-                    Interactive
+                    Results
+                  </TabButton>
+                  <TabButton
+                    active={currentReportTab === "disagnostics"}
+                    onClick={() => setCurrentReportTab("disagnostics")}
+                  >
+                    Diagnostics
                   </TabButton>
                 </ReportTypeTabs>
                 {globals.report ? (

@@ -52,7 +52,7 @@ async function waitForAnimationsAndTransitions(page: playwright.Page) {
         document.removeEventListener("transitionend", onEnd, true);
         document.removeEventListener("animationend", onEnd, true);
         resolve(0);
-      }, 1000);
+      }, 500);
     });
   });
 }
@@ -114,6 +114,7 @@ export async function runScan(
     const url = `http://localhost:6006/iframe.html?viewMode=story&id=${storyId}`;
 
     try {
+      console.log(`Scanning story: ${storyId}`);
       await page.goto(url, {
         waitUntil: "load",
       });
@@ -138,10 +139,12 @@ export async function runScan(
           parameters?.acr?.delay ?? parameters?.chromatic?.delay ?? undefined;
 
         if (delay) {
+          console.log(`Story has ${delay}ms delay`);
           await page.waitForTimeout(delay);
         }
 
         if (parameters?.hasPlay) {
+          console.log("Story has play function");
           await page.evaluate(() => {
             return window.playFunction({
               canvasElement: document.querySelector("#storybook-root"),
@@ -149,7 +152,7 @@ export async function runScan(
           });
         }
       } catch (e) {
-        //console.error( storyId, e);
+        console.error(storyId, e);
         errors.push({
           storyId,
           error: {
@@ -180,7 +183,7 @@ export async function runScan(
           storyId,
           scanTime,
         };
-        //console.log('Scan result', storyId, result.violations)
+
         results.push(result);
         options.onProgress({
           currentIndex: Number(s),
@@ -189,6 +192,8 @@ export async function runScan(
           progress: Number(s) / stories.length,
           estimatedMSRemaining,
         });
+
+        console.log(`Scan completed for story: ${storyId} (${scanTime}ms)`);
       }
     } catch (e) {
       console.error("Error running axe scan", storyId, e);

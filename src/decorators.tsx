@@ -1,3 +1,4 @@
+import React from "react";
 import { ReactRenderer } from "@storybook/react/*";
 import { ReactElement } from "react";
 import { DecoratorFunction, PlayFunction } from "storybook/internal/types";

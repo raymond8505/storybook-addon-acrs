@@ -1,3 +1,4 @@
+import React from "react";
 import { Result } from "src/types";
 import { useEffect } from "storybook/internal/preview-api";
 import { useChannel } from "storybook/internal/preview-api";
