@@ -151,7 +151,10 @@ export async function runScan(
         console.error(storyId, e);
         errors.push({
           storyId,
-          error: { ...e },
+          error: {
+            name: e.name,
+            message: e.message,
+          },
         });
       } finally {
         const builder = new AxeBuilder({ page });

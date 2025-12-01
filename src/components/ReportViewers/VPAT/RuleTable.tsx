@@ -7,15 +7,23 @@ import {
   getRuleConformanceLevel,
 } from "src/components/ReportViewers/VPAT/helpers";
 import { WCAGRuleLink } from "src/hooks/useReportServer";
+import { useReportSettings } from "src/hooks/useReportSettings";
 import { ScanResult } from "src/server/runScan";
 import { DL, Table, UL } from "storybook/internal/components";
 import {
-  useGlobals,
   useStorybookApi,
   useStorybookState,
 } from "storybook/internal/manager-api";
 import { API_StoryEntry } from "storybook/internal/types";
+import axe from "axe-core";
 
+const uniqueByStoryId = (
+  result: AxeResultWithStoryId,
+  index: number,
+  arr: AxeResultWithStoryId[],
+) => {
+  return arr.findIndex((r) => r.storyId === result.storyId) === index;
+};
 export interface RuleTableProps {
   report: ScanResult;
   ruleDefinitions: WCAGRuleLink[];
@@ -26,10 +34,13 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
     return tags.some((tag) => rule.tags?.includes(tag));
   });
 
+  console.log({ tableRules });
+
   const sbState = useStorybookState();
   const stories = useMemo(() => sbState.index, [sbState.index]);
   const api = useStorybookApi();
-  const [globals, updateGlobals] = useGlobals();
+  const { settings } = useReportSettings();
+  const axeRules = axe.getRules();
   return (
     <Table
       style={{
@@ -53,22 +64,14 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
             rule.ruleTag,
             "violations",
           );
-          const ruleIncompletes = getResultsByTag(
-            report,
-            rule.ruleTag,
-            "incomplete",
-          );
           const violationsByImpact = getResultsByImpact(ruleViolations);
 
-          const incompleteByImpact = getResultsByImpact(ruleIncompletes);
+          const excludedRules = settings.rules.exclude
+            .map((r) => {
+              return axeRules.find((rule) => rule.ruleId === r);
+            })
+            .filter((axeRule) => axeRule.tags?.includes(rule.ruleTag));
 
-          const uniqueByStoryId = (
-            result: AxeResultWithStoryId,
-            index: number,
-            arr: AxeResultWithStoryId[],
-          ) => {
-            return arr.findIndex((r) => r.storyId === result.storyId) === index;
-          };
           return (
             <tr key={index}>
               <td>
@@ -78,60 +81,81 @@ export function RuleTable({ report, ruleDefinitions, tags }: RuleTableProps) {
               </td>
               <td>{conformanceLevel}</td>
               <td>
-                {conformanceLevel === "No Violations Found" ? (
-                  ""
-                ) : (
-                  <DL style={{ fontSize: "inherit", lineHeight: "inherit" }}>
-                    {["critical", "serious", "moderate", "minor"].map(
-                      (impact) => {
-                        const impactResults = [
-                          ...violationsByImpact[
-                            impact as keyof ReturnType<
-                              typeof getResultsByImpact
+                <DL style={{ fontSize: "inherit", lineHeight: "inherit" }}>
+                  {["Critical", "Serious", "Moderate", "Minor"].map(
+                    (impact) => {
+                      const impactResults = [
+                        ...violationsByImpact[
+                          impact.toLowerCase() as keyof ReturnType<
+                            typeof getResultsByImpact
+                          >
+                        ]
+                          .filter(uniqueByStoryId)
+                          .filter(
+                            (result) =>
+                              !settings.rules.exclude.find(
+                                (ruleId) => ruleId === result.id,
+                              ),
+                          ),
+                      ];
+
+                      if (impactResults.length === 0) {
+                        return null;
+                      }
+
+                      return (
+                        <Fragment key={`${index}-${impact}`}>
+                          <dt>{impact} Violations</dt>
+                          <dd>
+                            <UL
+                              style={{
+                                fontSize: "inherit",
+                                lineHeight: "inherit",
+                              }}
                             >
-                          ].filter(uniqueByStoryId),
-                          ...incompleteByImpact[
-                            impact as keyof ReturnType<
-                              typeof getResultsByImpact
-                            >
-                          ].filter(uniqueByStoryId),
-                        ];
+                              {impactResults.map((result, resultIndex) => {
+                                const story = stories[
+                                  result.storyId
+                                ] as API_StoryEntry;
 
-                        if (impactResults.length === 0) {
-                          return null;
-                        }
-
-                        return (
-                          <Fragment key={`${index}-${impact}`}>
-                            <dt>{impact}</dt>
-                            <dd>
-                              <UL
-                                style={{
-                                  fontSize: "inherit",
-                                  lineHeight: "inherit",
-                                }}
-                              >
-                                {impactResults.map((result, resultIndex) => {
-                                  const story = stories[
-                                    result.storyId
-                                  ] as API_StoryEntry;
-
-                                  return story ? (
-                                    <li
-                                      key={`${index}-${impact}-${result.id}-${resultIndex}`}
-                                    >
-                                      <StoryLink story={story} />
-                                    </li>
-                                  ) : null;
-                                })}
-                              </UL>
-                            </dd>
-                          </Fragment>
-                        );
-                      },
-                    )}
-                  </DL>
-                )}
+                                return story ? (
+                                  <li
+                                    key={`${index}-${impact}-${result.id}-${resultIndex}`}
+                                  >
+                                    <StoryLink story={story} /> ({result.id})
+                                  </li>
+                                ) : null;
+                              })}
+                            </UL>
+                          </dd>
+                        </Fragment>
+                      );
+                    },
+                  )}
+                  {excludedRules.length > 0 ? (
+                    <>
+                      <dt>Excluded Rules</dt>
+                      <dd>
+                        <UL
+                          style={{
+                            fontSize: "inherit",
+                            lineHeight: "inherit",
+                          }}
+                        >
+                          {excludedRules.map((rule, ruleIndex) => {
+                            return (
+                              <li key={`${index}-excluded-${ruleIndex}`}>
+                                <a href={rule?.helpUrl} target="_blank">
+                                  {rule?.ruleId}
+                                </a>
+                              </li>
+                            );
+                          })}
+                        </UL>
+                      </dd>
+                    </>
+                  ) : null}
+                </DL>
               </td>
             </tr>
           );

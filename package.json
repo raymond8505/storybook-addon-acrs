@@ -46,7 +46,6 @@
     "storybook": "storybook dev -p 6006 --no-open --debug",
     "build-storybook": "storybook build",
     "server:dev": "nodemon --ext ts --exec 'npx vite-node ./src/server/index.ts' --ignore ./src/server/cli.js --ignore ./src/server/htdocs/reports",
-    "server:app:dev": "nodemon --watch src/server --ext ts --exec 'npx vite-node src/server/app/index.ts'",
     "test": "jest",
     "rebuild-storybook": "node ./killStorybook.js && yarn storybook",
     "cli:dev": "nodemon ./src/server/cli.js --ignore ./src/server/index.js --ignore ./src/server/htdocs/reports"
